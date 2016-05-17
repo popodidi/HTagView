@@ -8,8 +8,8 @@
 
 Pod::Spec.new do |s|
   s.name             = "HTagView"
-  s.version          = "0.1.0"
-  s.summary          = "A short description of HTagView."
+  s.version          = "1.0.0"
+  s.summary          = "A customized tag view sublassing UIScrollView"
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -18,25 +18,25 @@ Pod::Spec.new do |s|
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
   s.description      = <<-DESC
-TODO: Add long description of the pod here.
+A customized tag view sublassing UIScrollView
                        DESC
 
-  s.homepage         = "https://github.com/<GITHUB_USERNAME>/HTagView"
+  s.homepage         = "https://github.com/popodidi/HTagView"
   # s.screenshots     = "www.example.com/screenshots_1", "www.example.com/screenshots_2"
   s.license          = 'MIT'
-  s.author           = { "Chang, Hao" => "popodidi@livemail.tw" }
-  s.source           = { :git => "https://github.com/<GITHUB_USERNAME>/HTagView.git", :tag => s.version.to_s }
+  s.author           = { "Hao" => "popodidi@livemail.tw" }
+  s.source           = { :git => "https://github.com/popodidi/HTagView.git", :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '8.0'
 
   s.source_files = 'HTagView/Classes/**/*'
   
-  # s.resource_bundles = {
-  #   'HTagView' => ['HTagView/Assets/*.png']
-  # }
+  s.resource_bundles = {
+    'HTagView' => ['HTagView/Assets/**/*.{png,jpeg,jpg,storyboard,xib}']
+  }
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
+  s.frameworks = 'UIKit'
   # s.dependency 'AFNetworking', '~> 2.3'
 end

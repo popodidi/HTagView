@@ -7,14 +7,15 @@
 //
 
 import UIKit
+import HTagView
 
 class ViewController: UIViewController {
 
+    @IBOutlet weak var tagView: HTagView!
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        tagView.addTagsWithTitle(["awef","aefawef","awefawef","awefhu","eiueue","aweiidknx"])
     }
-
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
