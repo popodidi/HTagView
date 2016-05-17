@@ -37,7 +37,7 @@ class HTag: UIButton {
                 let cancelButton = UIButton(type: .Custom)
                 cancelButton.setBackgroundImage(UIImage(named: "close_small", inBundle: NSBundle(forClass: self.classForCoder), compatibleWithTraitCollection: nil), forState: .Normal)
                 cancelButton.frame = CGRect(x: marg, y: (frame.height - cancelButtonHeight)/2, width: cancelButtonHeight, height: cancelButtonHeight)
-                cancelButton.addTarget(self, action: "tagCancelled", forControlEvents: .TouchUpInside)
+                cancelButton.addTarget(self, action: #selector(HTag.tagCancelled), forControlEvents: .TouchUpInside)
                 addSubview(cancelButton)
             }else{
                 self.setImage(nil, forState: .Normal)
@@ -70,7 +70,7 @@ class HTag: UIButton {
         configureButton()
     }
     
-    required public init?(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         configureButton()
     }
@@ -80,7 +80,7 @@ class HTag: UIButton {
 //        setTitleColor(UIColor.whiteColor(), forState: .Normal)
         clipsToBounds = true
         contentEdgeInsets = UIEdgeInsets(top: marg, left: marg, bottom: marg, right: marg)
-        addTarget(self, action: "tagClicked", forControlEvents: .TouchUpInside)
+        addTarget(self, action: #selector(HTag.tagClicked), forControlEvents: .TouchUpInside)
     }
     
     func setBackColors(mainColor: UIColor, secondColor: UIColor){
