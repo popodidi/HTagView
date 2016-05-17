@@ -9,7 +9,7 @@
 import UIKit
 
 @IBDesignable
-public class HTagView: UIScrollView, HTagDelegate {
+public class HTagView: UIView, HTagDelegate {
     @IBInspectable
     public var type : HTagViewType = .MultiSelect{
         didSet{
@@ -56,6 +56,12 @@ public class HTagView: UIScrollView, HTagDelegate {
     
     var tags : [HTag] = []{
         didSet{
+            for tag in oldValue{
+                tag.removeFromSuperview()
+            }
+            for tag in tags{
+                addSubview(tag)
+            }
             layoutSubviews()
         }
     }
@@ -81,7 +87,8 @@ public class HTagView: UIScrollView, HTagDelegate {
 //        layoutIfNeeded()
 //    }
 
-    public func addTagsWithTitle(titles: [String]){
+    public func setTagsWithTitle(titles: [String]){
+        var theTags = [HTag]()
         for title in titles{
             let tag = HTag()
             tag.delegate = self
@@ -97,10 +104,11 @@ public class HTagView: UIScrollView, HTagDelegate {
             tag.setTextColors(tagMainTextColor, secondColor: tagSecondTextColor)
             tag.layer.cornerRadius = tag.frame.height * tagCornerRadiusToHeightRatio
             tag.tagString = title
-            addSubview(tag)
-            tags.append(tag)
+//            addSubview(tag)
+            theTags.append(tag)
         }
-        layoutIfNeeded()
+//        layoutSubviews()
+        tags = theTags
     }
     
     override public func layoutSubviews() {
@@ -114,7 +122,7 @@ public class HTagView: UIScrollView, HTagDelegate {
             tags[index].frame.origin = CGPoint(x: x, y: y)
             x += tags[index].frame.width + btwTags
         }
-        self.contentSize = CGSize(width: self.frame.width, height: y + (tags.last?.frame.height ?? 0) + marg )
+        self.frame.size = CGSize(width: self.frame.width, height: y + (tags.last?.frame.height ?? 0) + marg )
     }
 
     
@@ -126,7 +134,6 @@ public class HTagView: UIScrollView, HTagDelegate {
         }
     }
     func tagClicked(sender: HTag){
-        print("\(tags.indexOf(sender))CLICKED")
         if type == .MultiSelect{
             sender.selected = !sender.selected
         }
