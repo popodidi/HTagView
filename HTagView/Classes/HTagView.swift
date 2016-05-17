@@ -8,8 +8,14 @@
 
 import UIKit
 
+public protocol HTagViewDelegate {
+    func tagViewTagCancelled()
+}
+
 @IBDesignable
 public class HTagView: UIView, HTagDelegate {
+    public var delegate : HTagViewDelegate?
+    
     @IBInspectable
     public var type : HTagViewType = .MultiSelect{
         didSet{
@@ -53,6 +59,11 @@ public class HTagView: UIView, HTagDelegate {
         }
     }
     
+    public var numberOfTags : Int{
+        get{
+            return tags.count
+        }
+    }
     
     var tags : [HTag] = []{
         didSet{
@@ -112,6 +123,9 @@ public class HTagView: UIView, HTagDelegate {
     }
     
     override public func layoutSubviews() {
+        if tags.count == 0{
+            self.frame.size = CGSize(width: self.frame.width, height: 0)
+        }else{
         var x = marg
         var y = marg
         for index in 0..<tags.count{
@@ -123,6 +137,7 @@ public class HTagView: UIView, HTagDelegate {
             x += tags[index].frame.width + btwTags
         }
         self.frame.size = CGSize(width: self.frame.width, height: y + (tags.last?.frame.height ?? 0) + marg )
+        }
     }
 
     
@@ -132,6 +147,8 @@ public class HTagView: UIView, HTagDelegate {
             tags.removeAtIndex(index)
             sender.removeFromSuperview()
         }
+        layoutSubviews()
+        delegate?.tagViewTagCancelled()
     }
     func tagClicked(sender: HTag){
         if type == .MultiSelect{

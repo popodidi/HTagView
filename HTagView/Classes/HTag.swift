@@ -36,8 +36,10 @@ class HTag: UIButton {
                 
                 let cancelButton = UIButton(type: .Custom)
                 cancelButton.setBackgroundImage(UIImage(named: "close_small", inBundle: NSBundle(forClass: self.classForCoder), compatibleWithTraitCollection: nil), forState: .Normal)
+                cancelButton.backgroundColor = UIColor.clearColor()
                 cancelButton.frame = CGRect(x: marg, y: (frame.height - cancelButtonHeight)/2, width: cancelButtonHeight, height: cancelButtonHeight)
-                cancelButton.addTarget(self, action: #selector(HTag.tagCancelled), forControlEvents: .TouchUpInside)
+                //                cancelButton.addTarget(self, action: #selector(HTag.tagCancelled), forControlEvents: .TouchUpInside)
+                cancelButton.userInteractionEnabled = false
                 addSubview(cancelButton)
             }else{
                 self.setImage(nil, forState: .Normal)
@@ -47,11 +49,15 @@ class HTag: UIButton {
     }
     
     
-    func tagCancelled(){
-        delegate?.tagCancelled(self)
-    }
+    //    func tagCancelled(){
+    //        delegate?.tagCancelled(self)
+    //    }
     func tagClicked(){
-        delegate?.tagClicked(self)
+        if withCancelButton{
+            delegate?.tagCancelled(self)
+        }else{
+            delegate?.tagClicked(self)
+        }
     }
     
     
@@ -76,8 +82,8 @@ class HTag: UIButton {
     }
     
     func configureButton(){
-//        backgroundColor = UIColor.darkGrayColor()
-//        setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        //        backgroundColor = UIColor.darkGrayColor()
+        //        setTitleColor(UIColor.whiteColor(), forState: .Normal)
         clipsToBounds = true
         contentEdgeInsets = UIEdgeInsets(top: marg, left: marg, bottom: marg, right: marg)
         addTarget(self, action: #selector(HTag.tagClicked), forControlEvents: .TouchUpInside)
@@ -105,12 +111,25 @@ class HTag: UIButton {
         setTitleColor(secondColor, forState: .Selected)
     }
     
-    /*
-    // Only override drawRect: if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func drawRect(rect: CGRect) {
-        // Drawing code
+    override func pointInside(point: CGPoint, withEvent event: UIEvent?) -> Bool {
+        if CGRectContainsPoint(bounds, point){
+            if withCancelButton{
+                if point.x < bounds.origin.x + marg + cancelButtonHeight{
+                    return true
+                }
+            }else{
+                return true
+            }
+        }
+        return false
     }
-    */
-
+    
+    /*
+     // Only override drawRect: if you perform custom drawing.
+     // An empty implementation adversely affects performance during animation.
+     override func drawRect(rect: CGRect) {
+     // Drawing code
+     }
+     */
+    
 }

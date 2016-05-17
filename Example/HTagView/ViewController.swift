@@ -14,7 +14,13 @@ class ViewController: UIViewController {
     @IBOutlet weak var tagView: HTagView!
     override func viewDidLoad() {
         super.viewDidLoad()
-        tagView.addTagsWithTitle(["awef","aefawef","awefawef","awefhu","eiueue","aweiidknx"])
+        tagView.type = .Cancel
+        tagView.marg = 20
+        tagView.btwTags = 12
+        tagView.btwLines = 12
+        tagView.tagMainBackColor = UIColor.blueColor()
+        tagView.tagMainTextColor = UIColor.whiteColor()
+        tagView.setTagsWithTitle(["awef","aefawef","awefawef","awefhu","eiueue","aweiidknx"])
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

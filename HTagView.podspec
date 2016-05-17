@@ -30,9 +30,7 @@ Pod::Spec.new do |s|
 
   s.source_files = 'HTagView/Classes/**/*'
   
-  s.resource_bundles = {
-    'HTagView' => ['HTagView/Assets/**/*.{png,jpeg,jpg,storyboard,xib}']
-  }
+  s.resources = ['HTagView/Assets/*.{xcassets,png,jpeg,jpg,storyboard,xib}']
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   s.frameworks = 'UIKit'
