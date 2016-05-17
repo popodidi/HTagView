@@ -22,7 +22,7 @@ pod "HTagView"
 
 ## Author
 
-Hao, popodidi@livemail.tw
+Hao
 
 ## License
 

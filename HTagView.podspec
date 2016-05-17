@@ -17,9 +17,7 @@ Pod::Spec.new do |s|
 #   * Write the description between the DESC delimiters below.
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
-  s.description      = <<-DESC
-A customized tag view sublassing UIScrollView
-                       DESC
+  s.description      = "A customized tag view sublassing UIScrollView"
 
   s.homepage         = "https://github.com/popodidi/HTagView"
   # s.screenshots     = "www.example.com/screenshots_1", "www.example.com/screenshots_2"
