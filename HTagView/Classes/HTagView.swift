@@ -9,7 +9,7 @@
 import UIKit
 
 public protocol HTagViewDelegate {
-    func tagViewTagCancelled()
+    func tagViewTagCancelled(tagTitle: String)
 }
 
 @IBDesignable
@@ -58,11 +58,29 @@ public class HTagView: UIView, HTagDelegate {
             layoutIfNeeded()
         }
     }
+    @IBInspectable
+    public var tagContentEdgeInsets: UIEdgeInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8){
+        didSet{
+            for tag in tags{
+                tag.contentInsets = tagContentEdgeInsets
+            }
+        }
+    }
+    
     
     public var numberOfTags : Int{
         get{
             return tags.count
         }
+    }
+    public var selectedTagsTitle: [String]{
+        var selectedTitles = [String]()
+        for tag in tags{
+            if !tag.selected{
+                selectedTitles.append(tag.tagString)
+            }
+        }
+        return selectedTitles
     }
     
     var tags : [HTag] = []{
@@ -85,18 +103,6 @@ public class HTagView: UIView, HTagDelegate {
     }
     
     // MARK: - Set Tags
-//    public func setTags(tags : [HTag]){
-//        self.tags = tags
-//    }
-    
-//    public func addTags(tags: [HTag]){
-//        self.tags.appendContentsOf(tags)
-//        for tag in tags{
-//            self.addSubview(tag)
-//            tag.delegate = self
-//        }
-//        layoutIfNeeded()
-//    }
 
     public func setTagsWithTitle(titles: [String]){
         var theTags = [HTag]()
@@ -111,14 +117,13 @@ public class HTagView: UIView, HTagDelegate {
                 tag.withCancelButton = false
                 tag.selected = true
             }
+            tag.contentInsets = tagContentEdgeInsets
             tag.setBackColors(tagMainBackColor, secondColor: tagSecondBackColor)
             tag.setTextColors(tagMainTextColor, secondColor: tagSecondTextColor)
             tag.layer.cornerRadius = tag.frame.height * tagCornerRadiusToHeightRatio
             tag.tagString = title
-//            addSubview(tag)
             theTags.append(tag)
         }
-//        layoutSubviews()
         tags = theTags
     }
     
@@ -147,8 +152,9 @@ public class HTagView: UIView, HTagDelegate {
             tags.removeAtIndex(index)
             sender.removeFromSuperview()
         }
+       
         layoutSubviews()
-        delegate?.tagViewTagCancelled()
+        delegate?.tagViewTagCancelled(sender.tagString)
     }
     func tagClicked(sender: HTag){
         if type == .MultiSelect{

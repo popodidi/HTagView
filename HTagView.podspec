@@ -8,8 +8,8 @@
 
 Pod::Spec.new do |s|
   s.name             = "HTagView"
-  s.version          = "1.0.0"
-  s.summary          = "A customized tag view sublassing UIScrollView"
+  s.version          = "1.0.1"
+  s.summary          = "A customized tag view sublassing UIView"
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
 #   * Write the description between the DESC delimiters below.
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
-  s.description      = "A customized tag view sublassing UIScrollView where tag could be either with cancel button or multiseletable."
+  s.description      = "A customized tag view sublassing UIView where tag could be either with cancel button or multiseletable."
 
   s.homepage         = "https://github.com/popodidi/HTagView"
   # s.screenshots     = "www.example.com/screenshots_1", "www.example.com/screenshots_2"

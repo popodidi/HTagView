@@ -1,0 +1,6 @@
+framework module HTagView {
+  umbrella header "HTagView-umbrella.h"
+
+  export *
+  module * { export * }
+}

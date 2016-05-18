@@ -1,0 +1,24 @@
+{
+  "name": "HTagView",
+  "version": "0.1.0",
+  "summary": "A short description of HTagView.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/<GITHUB_USERNAME>/HTagView",
+  "license": "MIT",
+  "authors": {
+    "Chang, Hao": "popodidi@livemail.tw"
+  },
+  "source": {
+    "git": "https://github.com/<GITHUB_USERNAME>/HTagView.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source_files": "HTagView/Classes/**/*",
+  "resource_bundles": {
+    "HTagView": [
+      "HTagView/Assets/**/*.{png,jpeg,jpg,storyboard,xib}"
+    ]
+  }
+}

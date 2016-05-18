@@ -23,35 +23,34 @@ class HTag: UIButton {
             sizeToFit()
         }
     }
+    let cancelButton = UIButton(type: .Custom)
     var cancelButtonHeight : CGFloat{
         get{
             return frame.height/4
         }
     }
+    var btwCancelButtonAndText = CGFloat(10)
+    func configureCancelButton(){
+        cancelButton.setBackgroundImage(UIImage(named: "close_small", inBundle: NSBundle(forClass: self.classForCoder), compatibleWithTraitCollection: nil), forState: .Normal)
+        cancelButton.backgroundColor = UIColor.clearColor()
+        cancelButton.frame = CGRect(x: contentInsets.left, y: (frame.height - cancelButtonHeight)/2, width: cancelButtonHeight, height: cancelButtonHeight)
+        cancelButton.userInteractionEnabled = false
+    }
     var withCancelButton = false{
         didSet{
             if withCancelButton{
-                contentEdgeInsets = UIEdgeInsets(top: marg, left: marg + cancelButtonHeight + 1.5 * marg, bottom: marg, right: marg)
+                contentInsets = UIEdgeInsets(top: contentInsets.top, left: contentInsets.left, bottom: contentInsets.bottom, right: contentInsets.right)
                 sizeToFit()
-                
-                let cancelButton = UIButton(type: .Custom)
-                cancelButton.setBackgroundImage(UIImage(named: "close_small", inBundle: NSBundle(forClass: self.classForCoder), compatibleWithTraitCollection: nil), forState: .Normal)
-                cancelButton.backgroundColor = UIColor.clearColor()
-                cancelButton.frame = CGRect(x: marg, y: (frame.height - cancelButtonHeight)/2, width: cancelButtonHeight, height: cancelButtonHeight)
-                //                cancelButton.addTarget(self, action: #selector(HTag.tagCancelled), forControlEvents: .TouchUpInside)
-                cancelButton.userInteractionEnabled = false
                 addSubview(cancelButton)
             }else{
+                contentEdgeInsets = calculatedContentEdgeInsets(contentInsets.top, left: contentInsets.left, bottom: contentInsets.bottom, right: contentInsets.right)
                 self.setImage(nil, forState: .Normal)
+                cancelButton.removeFromSuperview()
             }
             sizeToFit()
         }
     }
     
-    
-    //    func tagCancelled(){
-    //        delegate?.tagCancelled(self)
-    //    }
     func tagClicked(){
         if withCancelButton{
             delegate?.tagCancelled(self)
@@ -60,14 +59,18 @@ class HTag: UIButton {
         }
     }
     
-    
-    var marg = CGFloat(8){
+    var contentInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8){
         didSet{
-            if withCancelButton{
-                contentEdgeInsets = UIEdgeInsets(top: marg, left: marg + cancelButtonHeight, bottom: marg, right: marg)
-            }else{
-                contentEdgeInsets = UIEdgeInsets(top: marg, left: marg, bottom: marg, right: marg)
-            }
+            contentEdgeInsets = calculatedContentEdgeInsets(contentInsets.top, left: contentInsets.left, bottom: contentInsets.bottom, right: contentInsets.right)
+            configureCancelButton()
+        }
+    }
+    
+    private func calculatedContentEdgeInsets(top: CGFloat, left: CGFloat, bottom: CGFloat, right: CGFloat) -> UIEdgeInsets{
+        if withCancelButton{
+           return UIEdgeInsets(top: top, left: left + cancelButtonHeight + btwCancelButtonAndText, bottom: bottom, right: right)
+        }else{
+            return UIEdgeInsets(top: top, left: left, bottom: bottom, right: right)
         }
     }
     
@@ -82,10 +85,8 @@ class HTag: UIButton {
     }
     
     func configureButton(){
-        //        backgroundColor = UIColor.darkGrayColor()
-        //        setTitleColor(UIColor.whiteColor(), forState: .Normal)
         clipsToBounds = true
-        contentEdgeInsets = UIEdgeInsets(top: marg, left: marg, bottom: marg, right: marg)
+        contentInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
         addTarget(self, action: #selector(HTag.tagClicked), forControlEvents: .TouchUpInside)
     }
     
@@ -114,7 +115,7 @@ class HTag: UIButton {
     override func pointInside(point: CGPoint, withEvent event: UIEvent?) -> Bool {
         if CGRectContainsPoint(bounds, point){
             if withCancelButton{
-                if point.x < bounds.origin.x + marg + cancelButtonHeight{
+                if point.x < bounds.origin.x + contentEdgeInsets.left + cancelButtonHeight + btwCancelButtonAndText{
                     return true
                 }
             }else{
@@ -123,13 +124,5 @@ class HTag: UIButton {
         }
         return false
     }
-    
-    /*
-     // Only override drawRect: if you perform custom drawing.
-     // An empty implementation adversely affects performance during animation.
-     override func drawRect(rect: CGRect) {
-     // Drawing code
-     }
-     */
     
 }

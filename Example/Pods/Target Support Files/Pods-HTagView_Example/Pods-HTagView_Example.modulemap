@@ -1,0 +1,6 @@
+framework module Pods_HTagView_Example {
+  umbrella header "Pods-HTagView_Example-umbrella.h"
+
+  export *
+  module * { export * }
+}

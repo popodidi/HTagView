@@ -1,0 +1,22 @@
+PODS:
+  - HTagView (0.1.0)
+  - Nimble (3.2.0)
+  - Quick (0.9.2)
+
+DEPENDENCIES:
+  - HTagView (from `../`)
+  - Nimble (~> 3.0)
+  - Quick (~> 0.8)
+
+EXTERNAL SOURCES:
+  HTagView:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  HTagView: db7374bc9d19d99209b51781c55c0d8dd2993a3f
+  Nimble: 703854335d181df169bbca9c97117b5cf8c47c1d
+  Quick: 18d057bc66451eedd5d1c8dc99ba2a5db6e60226
+
+PODFILE CHECKSUM: 0b789d2e8490f4a7ed3560fa69c65d6f6018a2ca
+
+COCOAPODS: 1.0.0
