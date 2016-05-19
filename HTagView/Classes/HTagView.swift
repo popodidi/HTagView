@@ -12,6 +12,11 @@ public protocol HTagViewDelegate {
     func tagViewTagCancelled(tagTitle: String)
 }
 
+
+public enum HTagViewType{
+    case Cancel, MultiSelect
+}
+
 @IBDesignable
 public class HTagView: UIView, HTagDelegate {
     public var delegate : HTagViewDelegate?
@@ -144,6 +149,17 @@ public class HTagView: UIView, HTagDelegate {
         self.frame.size = CGSize(width: self.frame.width, height: y + (tags.last?.frame.height ?? 0) + marg )
         }
     }
+    
+    // MARK: - Manipulate Tag
+    public func selectTagWithTitles(titles: [String]){
+        for tag in tags{
+            for title in titles{
+                if tag.tagString == title{
+                    tag.selected = false
+                }
+            }
+        }
+    }
 
     
     // MARK: - Tag Delegate
@@ -164,6 +180,3 @@ public class HTagView: UIView, HTagDelegate {
 
 }
 
-public enum HTagViewType{
-    case Cancel, MultiSelect
-}
