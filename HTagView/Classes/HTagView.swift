@@ -71,6 +71,15 @@ public class HTagView: UIView, HTagDelegate {
             }
         }
     }
+    @IBInspectable
+    public var fontSize : CGFloat = 14{
+        didSet{
+            for tag in tags{
+                tag.tagFontSize = fontSize
+            }
+            layoutIfNeeded()
+        }
+    }
     
     
     public var numberOfTags : Int{
@@ -123,6 +132,7 @@ public class HTagView: UIView, HTagDelegate {
                 tag.selected = true
             }
             tag.contentInsets = tagContentEdgeInsets
+            tag.titleLabel?.font = tag.titleLabel?.font.fontWithSize(fontSize)
             tag.setBackColors(tagMainBackColor, secondColor: tagSecondBackColor)
             tag.setTextColors(tagMainTextColor, secondColor: tagSecondTextColor)
             tag.layer.cornerRadius = tag.frame.height * tagCornerRadiusToHeightRatio

@@ -20,36 +20,49 @@ class HTag: UIButton {
     var tagString = ""{
         didSet{
             self.setTitle(tagString, forState: .Normal)
-            sizeToFit()
+//            sizeToFit()
+            layoutEverything()
+        }
+    }
+    var tagFontSize : CGFloat = 17{
+        didSet{
+            titleLabel?.font = titleLabel?.font.fontWithSize(tagFontSize)
+//            sizeToFit()
+//            layoutSubviews()
+//            configureCancelButton()
+            layoutEverything()
         }
     }
     let cancelButton = UIButton(type: .Custom)
     var cancelButtonHeight : CGFloat{
         get{
-            return frame.height/4
+            return bounds.height/4
         }
     }
+    
     var btwCancelButtonAndText = CGFloat(10)
-    func configureCancelButton(){
-        cancelButton.setBackgroundImage(UIImage(named: "close_small", inBundle: NSBundle(forClass: self.classForCoder), compatibleWithTraitCollection: nil), forState: .Normal)
-        cancelButton.backgroundColor = UIColor.clearColor()
-        cancelButton.frame = CGRect(x: contentInsets.left, y: (frame.height - cancelButtonHeight)/2, width: cancelButtonHeight, height: cancelButtonHeight)
-        cancelButton.userInteractionEnabled = false
-    }
     var withCancelButton = false{
         didSet{
             if withCancelButton{
                 contentInsets = UIEdgeInsets(top: contentInsets.top, left: contentInsets.left, bottom: contentInsets.bottom, right: contentInsets.right)
-                sizeToFit()
+//                sizeToFit()
                 addSubview(cancelButton)
             }else{
                 contentEdgeInsets = calculatedContentEdgeInsets(contentInsets.top, left: contentInsets.left, bottom: contentInsets.bottom, right: contentInsets.right)
                 self.setImage(nil, forState: .Normal)
                 cancelButton.removeFromSuperview()
             }
-            sizeToFit()
+            layoutEverything()
         }
     }
+    var contentInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8){
+        didSet{
+            contentEdgeInsets = calculatedContentEdgeInsets(contentInsets.top, left: contentInsets.left, bottom: contentInsets.bottom, right: contentInsets.right)
+            layoutEverything()
+        }
+    }
+    
+    
     
     func tagClicked(){
         if withCancelButton{
@@ -59,12 +72,7 @@ class HTag: UIButton {
         }
     }
     
-    var contentInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8){
-        didSet{
-            contentEdgeInsets = calculatedContentEdgeInsets(contentInsets.top, left: contentInsets.left, bottom: contentInsets.bottom, right: contentInsets.right)
-            configureCancelButton()
-        }
-    }
+    
     
     private func calculatedContentEdgeInsets(top: CGFloat, left: CGFloat, bottom: CGFloat, right: CGFloat) -> UIEdgeInsets{
         if withCancelButton{
@@ -74,14 +82,17 @@ class HTag: UIButton {
         }
     }
     
+    // MARK: - Init
     override init(frame: CGRect) {
         super.init(frame: frame)
         configureButton()
+        configureCancelButton()
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         configureButton()
+        configureCancelButton()
     }
     
     func configureButton(){
@@ -90,6 +101,27 @@ class HTag: UIButton {
         addTarget(self, action: #selector(HTag.tagClicked), forControlEvents: .TouchUpInside)
     }
     
+    // MARK: - layout
+    func layoutEverything(){
+        sizeToFit()
+        configureCancelButton()
+        layoutSubviews()
+    }
+    
+    func configureCancelButton(){
+        cancelButton.setBackgroundImage(UIImage(named: "close_small", inBundle: NSBundle(forClass: self.classForCoder), compatibleWithTraitCollection: nil), forState: .Normal)
+        
+        cancelButton.contentVerticalAlignment = .Fill;
+        cancelButton.contentHorizontalAlignment = .Fill;
+        cancelButton.backgroundColor = UIColor.clearColor()
+        
+        cancelButton.frame = CGRect(x: contentInsets.left, y: (frame.height - cancelButtonHeight)/2, width: cancelButtonHeight, height: cancelButtonHeight)
+        cancelButton.userInteractionEnabled = false
+        sizeToFit()
+    }
+    
+    
+    // MARK: - set color
     func setBackColors(mainColor: UIColor, secondColor: UIColor){
         
         UIGraphicsBeginImageContext(CGSize(width: 1, height: 1))

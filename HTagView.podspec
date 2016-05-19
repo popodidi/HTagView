@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "HTagView"
-  s.version          = "1.0.2"
+  s.version          = "1.0.3"
   s.summary          = "A customized tag view sublassing UIView"
 
 # This description is used to generate tags and improve search results.
