@@ -8,8 +8,10 @@
 
 import UIKit
 
+@objc
 public protocol HTagViewDelegate {
-    func tagViewTagCancelled(tagTitle: String)
+    optional func tagViewDidCancelTag(tagTitle: String)
+    optional func tagViewTagSelectionDidChange(tagTitle: String)
 }
 
 
@@ -180,12 +182,13 @@ public class HTagView: UIView, HTagDelegate {
         }
        
         layoutSubviews()
-        delegate?.tagViewTagCancelled(sender.tagString)
+        delegate?.tagViewDidCancelTag?(sender.tagString)
     }
     func tagClicked(sender: HTag){
         if type == .MultiSelect{
             sender.selected = !sender.selected
         }
+        delegate?.tagViewTagSelectionDidChange?(sender.tagString)
     }
 
 }
