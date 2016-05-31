@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "HTagView"
-  s.version          = "1.0.4"
+  s.version          = "1.1.0"
   s.summary          = "A customized tag view sublassing UIView"
 
 # This description is used to generate tags and improve search results.
@@ -22,7 +22,7 @@ Pod::Spec.new do |s|
   s.homepage         = "https://github.com/popodidi/HTagView"
   # s.screenshots     = "www.example.com/screenshots_1", "www.example.com/screenshots_2"
   s.license          = 'MIT'
-  s.author           = { "Hao" => "popodidi@livemail.tw" }
+  s.author           = { "Hao" => "changhao@haostudio.cc" }
   s.source           = { :git => "https://github.com/popodidi/HTagView.git", :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 

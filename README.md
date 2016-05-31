@@ -5,11 +5,25 @@
 [![License](https://img.shields.io/cocoapods/l/HTagView.svg?style=flat)](http://cocoapods.org/pods/HTagView)
 [![Platform](https://img.shields.io/cocoapods/p/HTagView.svg?style=flat)](http://cocoapods.org/pods/HTagView)
 
+HTagView is a customized tag view sublassing UIView where tag could be either with cancel button or multiseletable.
+
+### Features
+
+- `.Cancel` and `.MultiSelect` types available (see below)
+- Customized configuration
+- Auto set view height
+
+### Demo
+![](demo.gif)
+
+
+
+
 ## Example
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
 
-## Requirements
+<!--## Requirements-->
 
 ## Installation
 
@@ -20,9 +34,61 @@ it, simply add the following line to your Podfile:
 pod "HTagView"
 ```
 
+## Usage
+### Configure HTagView
+These properties support storyboard setting as well.
+
+```swift
+override func viewDidLoad(){
+	super.viewDidLoad()
+	//.
+	//.
+	//.
+	
+	// configure tagView
+	tagView.delegate = self
+	tagView.type = .Cancel // or .MultiSelect
+	tagView2.autosetHeight = true
+	tagView2.marg = 20
+	tagView2.btwTags = 20
+	tagView2.btwLines = 20
+	tagView2.fontSize = 15
+	tagView2.tagMainBackColor = UIColor.blueColor()
+	tagView2.tagSecondBackColor = UIColor.lightGrayColor()
+	tagView2.tagSecondTextColor = UIColor.darkTextColor()
+	tagView2.tagContentEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
+}
+```
+### Set Tags
+```swift
+	tagView.setTagsWithTitle(["Hey!","This","is","a","HTagView."])
+```
+### Methods Called for User Interaction
+```swift
+class ViewController: UIViewController, HTagViewDelegate{
+	// .
+	// .
+	// .
+	
+	// MARK: - HTagViewDelegate
+	// For .MultiSelect type HTagView
+    func tagView(tagView: HTagView, tagSelectionDidChange tagSelected: [String]){
+        print(tagSelected)
+    }
+    
+	// For .Cancel type HTagView	
+	func tagView(tagView: HTagView, didCancelTag tagTitle: String) {
+		print("tag with title: '\(tagTitle)' has been removed from tagView")
+		// Update autolayout constraints if needed
+	}
+
+}
+```
+
 ## Author
 
-Hao
+[Hao](changhao@haostudio.cc)
+
 
 ## License
 

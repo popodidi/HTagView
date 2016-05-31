@@ -20,17 +20,13 @@ class HTag: UIButton {
     var tagString = ""{
         didSet{
             self.setTitle(tagString, forState: .Normal)
-//            sizeToFit()
-            layoutEverything()
+            layoutSubviews()
         }
     }
     var tagFontSize : CGFloat = 17{
         didSet{
             titleLabel?.font = titleLabel?.font.fontWithSize(tagFontSize)
-//            sizeToFit()
-//            layoutSubviews()
-//            configureCancelButton()
-            layoutEverything()
+            layoutSubviews()
         }
     }
     let cancelButton = UIButton(type: .Custom)
@@ -45,20 +41,19 @@ class HTag: UIButton {
         didSet{
             if withCancelButton{
                 contentInsets = UIEdgeInsets(top: contentInsets.top, left: contentInsets.left, bottom: contentInsets.bottom, right: contentInsets.right)
-//                sizeToFit()
                 addSubview(cancelButton)
             }else{
                 contentEdgeInsets = calculatedContentEdgeInsets(contentInsets.top, left: contentInsets.left, bottom: contentInsets.bottom, right: contentInsets.right)
                 self.setImage(nil, forState: .Normal)
                 cancelButton.removeFromSuperview()
             }
-            layoutEverything()
+            layoutSubviews()
         }
     }
     var contentInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8){
         didSet{
             contentEdgeInsets = calculatedContentEdgeInsets(contentInsets.top, left: contentInsets.left, bottom: contentInsets.bottom, right: contentInsets.right)
-            layoutEverything()
+            layoutSubviews()
         }
     }
     
@@ -102,10 +97,10 @@ class HTag: UIButton {
     }
     
     // MARK: - layout
-    func layoutEverything(){
+    override func layoutSubviews() {
         sizeToFit()
         configureCancelButton()
-        layoutSubviews()
+        super.layoutSubviews()
     }
     
     func configureCancelButton(){
