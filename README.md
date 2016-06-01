@@ -11,7 +11,10 @@ HTagView is a customized tag view sublassing UIView where tag could be either wi
 
 - `.Cancel` and `.MultiSelect` types available (see below)
 - Customized configuration
-- Auto set view height
+- Supporting Autolayout
+
+### To Do
+- Documentation
 
 ### Demo
 ![](demo.gif)
@@ -79,12 +82,10 @@ class ViewController: UIViewController, HTagViewDelegate{
 	// For .Cancel type HTagView	
 	func tagView(tagView: HTagView, didCancelTag tagTitle: String) {
 		print("tag with title: '\(tagTitle)' has been removed from tagView")
-		// Update autolayout constraints if needed
 	}
 
 }
 ```
-
 ## Author
 
 [Hao](changhao@haostudio.cc)

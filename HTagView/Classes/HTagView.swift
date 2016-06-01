@@ -85,6 +85,7 @@ public class HTagView: UIView, HTagDelegate {
                 tag.tagFontSize = fontSize
             }
             layoutIfNeeded()
+            invalidateIntrinsicContentSize()
         }
     }
     
@@ -95,13 +96,15 @@ public class HTagView: UIView, HTagDelegate {
         }
     }
     public var selectedTagsTitle: [String]{
-        var selectedTitles = [String]()
-        for tag in tags{
-            if !tag.selected{
-                selectedTitles.append(tag.tagString)
+        get{
+            var selectedTitles = [String]()
+            for tag in tags{
+                if !tag.selected{
+                    selectedTitles.append(tag.tagString)
+                }
             }
+            return selectedTitles
         }
-        return selectedTitles
     }
     
     var tags : [HTag] = []{
@@ -147,6 +150,7 @@ public class HTagView: UIView, HTagDelegate {
             theTags.append(tag)
         }
         tags = theTags
+        invalidateIntrinsicContentSize()
     }
     
     override public func layoutSubviews() {
@@ -187,6 +191,8 @@ public class HTagView: UIView, HTagDelegate {
         }
         
         layoutSubviews()
+        invalidateIntrinsicContentSize()
+        
         (delegate as? HTagViewDelegate)?.tagView?(self, didCancelTag: sender.tagString)
     }
     func tagClicked(sender: HTag){
@@ -196,5 +202,13 @@ public class HTagView: UIView, HTagDelegate {
         (delegate as? HTagViewDelegate)?.tagView?(self, tagSelectionDidChange: selectedTagsTitle)
     }
     
+    override public func intrinsicContentSize() -> CGSize {
+        if tags.count == 0{
+            return CGSize(width: UIViewNoIntrinsicMetric, height: 0)
+        }else{
+            let height = (tags.last?.frame.origin.y ?? 0) + (tags.last?.frame.height ?? 0) + marg
+            return CGSize(width: UIViewNoIntrinsicMetric, height: height )
+        }
+    }
 }
 

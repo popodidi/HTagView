@@ -42,13 +42,6 @@ class ViewController: UIViewController, HTagViewDelegate {
         tagView2.tagSecondTextColor = UIColor.darkTextColor()
         tagView2.tagContentEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
         tagView2.setTagsWithTitle(["Hey!","This","is","a","HTagView."])
-        
-        updateAutolayouConstraint()
-    }
-    
-    func updateAutolayouConstraint(){
-        tagView1HeightConstraint.constant = tagView1.frame.height
-        tagView2HeightConstraint.constant = tagView2.frame.height
     }
     
     // MARK: - HTagViewDelegate
@@ -60,9 +53,7 @@ class ViewController: UIViewController, HTagViewDelegate {
     
     func tagView(tagView: HTagView, didCancelTag tagTitle: String) {
         // For .Cancel type HTagView
-        print("tag with title: '\(tagTitle)' has been removed from tagView")
-        updateAutolayouConstraint()
-        
+        print("tag with title: '\(tagTitle)' has been removed from tagView")        
     }
     
     
