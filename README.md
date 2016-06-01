@@ -1,6 +1,6 @@
 # HTagView
 
-[![CI Status](http://img.shields.io/travis/Chang, Hao/HTagView.svg?style=flat)](https://travis-ci.org/Chang, Hao/HTagView)
+<!--[![CI Status](http://img.shields.io/travis/Chang, Hao/HTagView.svg?style=flat)](https://travis-ci.org/Chang, Hao/HTagView)-->
 [![Version](https://img.shields.io/cocoapods/v/HTagView.svg?style=flat)](http://cocoapods.org/pods/HTagView)
 [![License](https://img.shields.io/cocoapods/l/HTagView.svg?style=flat)](http://cocoapods.org/pods/HTagView)
 [![Platform](https://img.shields.io/cocoapods/p/HTagView.svg?style=flat)](http://cocoapods.org/pods/HTagView)
