@@ -17,7 +17,7 @@ class HTag: UIButton {
     
     var delegate: HTagDelegate?
     
-    var tagString = ""{
+    var tagString : String = ""{
         didSet{
             self.setTitle(tagString, forState: .Normal)
             layoutSubviews()
@@ -37,7 +37,7 @@ class HTag: UIButton {
     }
     
     var btwCancelButtonAndText = CGFloat(10)
-    var withCancelButton = false{
+    var withCancelButton : Bool = false{
         didSet{
             if withCancelButton{
                 contentInsets = UIEdgeInsets(top: contentInsets.top, left: contentInsets.left, bottom: contentInsets.bottom, right: contentInsets.right)
@@ -50,7 +50,7 @@ class HTag: UIButton {
             layoutSubviews()
         }
     }
-    var contentInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8){
+    var contentInsets : UIEdgeInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8){
         didSet{
             contentEdgeInsets = calculatedContentEdgeInsets(contentInsets.top, left: contentInsets.left, bottom: contentInsets.bottom, right: contentInsets.right)
             layoutSubviews()
