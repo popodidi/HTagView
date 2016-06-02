@@ -11,7 +11,7 @@ HTagView is a customized tag view sublassing UIView where tag could be either wi
 
 - `.Cancel` and `.MultiSelect` types available (see below)
 - Customized configuration
-- Supporting Autolayout
+- Supporting storyboard and autolayout
 
 ### To Do
 - Documentation
