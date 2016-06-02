@@ -51,7 +51,6 @@ override func viewDidLoad(){
 	// configure tagView
 	tagView.delegate = self
 	tagView.type = .Cancel // or .MultiSelect
-	tagView2.autosetHeight = true
 	tagView2.marg = 20
 	tagView2.btwTags = 20
 	tagView2.btwLines = 20
