@@ -51,14 +51,14 @@ override func viewDidLoad(){
 	// configure tagView
 	tagView.delegate = self
 	tagView.type = .Cancel // or .MultiSelect
-	tagView2.marg = 20
-	tagView2.btwTags = 20
-	tagView2.btwLines = 20
-	tagView2.fontSize = 15
-	tagView2.tagMainBackColor = UIColor.blueColor()
-	tagView2.tagSecondBackColor = UIColor.lightGrayColor()
-	tagView2.tagSecondTextColor = UIColor.darkTextColor()
-	tagView2.tagContentEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
+	tagView.marg = 20
+	tagView.btwTags = 20
+	tagView.btwLines = 20
+	tagView.fontSize = 15
+	tagView.tagMainBackColor = UIColor.blueColor()
+	tagView.tagSecondBackColor = UIColor.lightGrayColor()
+	tagView.tagSecondTextColor = UIColor.darkTextColor()
+	tagView.tagContentEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
 }
 ```
 ### Set Tags
