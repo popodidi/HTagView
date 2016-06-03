@@ -13,9 +13,6 @@ HTagView is a customized tag view sublassing UIView where tag could be either wi
 - Customized configuration
 - Supporting storyboard and autolayout
 
-### To Do
-- Documentation
-
 ### Demo
 ![](demo.gif)
 
@@ -39,7 +36,7 @@ pod "HTagView"
 
 ## Usage
 ### Configure HTagView
-These properties support storyboard setting as well.
+These properties support `@IBDesignable` as well.
 
 ```swift
 override func viewDidLoad(){
