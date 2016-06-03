@@ -12,14 +12,11 @@ import HTagView
 class ViewController: UIViewController, HTagViewDelegate {
 
     @IBOutlet weak var tagView1: HTagView!
-    @IBOutlet weak var tagView1HeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var tagView2: HTagView!
-    @IBOutlet weak var tagView2HeightConstraint: NSLayoutConstraint!
     override func viewDidLoad() {
         super.viewDidLoad()
         tagView1.type = .Cancel
         tagView1.delegate = self
-        tagView1.autosetHeight = true
         tagView1.marg = 20
         tagView1.btwTags = 20
         tagView1.btwLines = 20
@@ -32,7 +29,6 @@ class ViewController: UIViewController, HTagViewDelegate {
         
         tagView2.type = .MultiSelect
         tagView2.delegate = self
-        tagView2.autosetHeight = true
         tagView2.marg = 20
         tagView2.btwTags = 20
         tagView2.btwLines = 20

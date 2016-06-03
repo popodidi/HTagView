@@ -8,22 +8,37 @@
 
 import UIKit
 
+/**
+ HTagViewDelegate is a protocol to implement for responding to user interactions to the HTagView.
+ */
 @objc
 public protocol HTagViewDelegate {
     optional func tagView(tagView: HTagView, didCancelTag tagTitle: String)
     optional func tagView(tagView: HTagView, tagSelectionDidChange tagSelected: [String])
 }
 
-
+/**
+ HTagView comes with two types, `.Cancel` and `.MultiSelect`.
+ */
 public enum HTagViewType{
     case Cancel, MultiSelect
 }
 
+
 @IBDesignable
 public class HTagView: UIView, HTagDelegate {
+    
+    // MARK: - Delegate
+    /**
+     HTagViewDelegate
+     */
     @IBOutlet
     public var delegate : AnyObject?
     
+    // MARK: - HTagView Configuration
+    /**
+     Type of the HTagView
+     */
     @IBInspectable
     public var type : HTagViewType = .MultiSelect{
         didSet{
@@ -40,27 +55,49 @@ public class HTagView: UIView, HTagDelegate {
             }
         }
     }
-    @IBInspectable
-    public var autosetHeight : Bool = true{
-        didSet{
-            layoutSubviews()
-        }
-    }
     
+    /**
+     HTagView margin
+     */
     @IBInspectable
     public var marg : CGFloat = 20
+    /**
+     Distance between tags in the same line
+     */
     @IBInspectable
     public var btwTags : CGFloat = 8
+    /**
+     Distance between lines
+     */
     @IBInspectable
     public var btwLines : CGFloat = 8
+    
+    // MARK: - HTag Configuration
+    /**
+     - `.Cancel` type: background color for all tags.
+     - `.MultiSelect` type: background color for the selected tags.
+     */
     @IBInspectable
     public var tagMainBackColor : UIColor = UIColor(colorLiteralRed: 100/255, green: 200/255, blue: 205/255, alpha: 1)
+    /**
+     - `.Cancel` type: text color for all tags.
+     - `.MultiSelect` type: text color for the selected tags.
+     */
     @IBInspectable
     public var tagMainTextColor : UIColor = UIColor.whiteColor()
+    /**
+     - `.MultiSelect` type: background color for the unselected tags.
+     */
     @IBInspectable
     public var tagSecondBackColor : UIColor = UIColor.lightGrayColor()
+    /**
+     - `.MultiSelect` type: text color for the unselected tags.
+     */
     @IBInspectable
     public var tagSecondTextColor : UIColor = UIColor.darkTextColor()
+    /**
+     The corner radius to height ratio of HTags.
+     */
     @IBInspectable
     public var tagCornerRadiusToHeightRatio :CGFloat = CGFloat(0.2){
         didSet{
@@ -70,6 +107,10 @@ public class HTagView: UIView, HTagDelegate {
             layoutIfNeeded()
         }
     }
+    /**
+     The content EdgeInsets of HTags, which would automatically adjust the position in `.Cancel` type.
+     On the other word, usages are the same in both types.
+     */
     @IBInspectable
     public var tagContentEdgeInsets: UIEdgeInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8){
         didSet{
@@ -78,6 +119,9 @@ public class HTagView: UIView, HTagDelegate {
             }
         }
     }
+    /**
+     The Font size of HTags.
+     */
     @IBInspectable
     public var fontSize : CGFloat = 14{
         didSet{
@@ -89,13 +133,33 @@ public class HTagView: UIView, HTagDelegate {
         }
     }
     
-    
+    // MARK: - APIs
+    /**
+     Total number of HTags in HTagView
+     */
     public var numberOfTags : Int{
         get{
             return tags.count
         }
     }
-    public var selectedTagsTitle: [String]{
+    
+    /**
+     All the titles of HTags
+     */
+    public var tagTitles : [String]{
+        get{
+            var titles = [String]()
+            for tag in tags{
+                titles.append(tag.tagString)
+            }
+            return titles
+        }
+    }
+    
+    /**
+     All the titles of selected HTags
+     */
+    public var selectedTagTitles: [String]{
         get{
             var selectedTitles = [String]()
             for tag in tags{
@@ -119,12 +183,12 @@ public class HTagView: UIView, HTagDelegate {
         }
     }
     
-    required public init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
-    override public init(frame: CGRect) {
-        super.init(frame: frame)
-    }
+//    required public init?(coder aDecoder: NSCoder) {
+//        super.init(coder: aDecoder)
+//    }
+//    override public init(frame: CGRect) {
+//        super.init(frame: frame)
+//    }
     
     // MARK: - Set Tags
     
@@ -155,7 +219,7 @@ public class HTagView: UIView, HTagDelegate {
     
     override public func layoutSubviews() {
         if tags.count == 0{
-            if autosetHeight { self.frame.size = CGSize(width: self.frame.width, height: 0) }
+            self.frame.size = CGSize(width: self.frame.width, height: 0)
         }else{
             var x = marg
             var y = marg
@@ -167,7 +231,7 @@ public class HTagView: UIView, HTagDelegate {
                 tags[index].frame.origin = CGPoint(x: x, y: y)
                 x += tags[index].frame.width + btwTags
             }
-            if autosetHeight { self.frame.size = CGSize(width: self.frame.width, height: y + (tags.last?.frame.height ?? 0) + marg ) }
+            self.frame.size = CGSize(width: self.frame.width, height: y + (tags.last?.frame.height ?? 0) + marg )
         }
     }
     
@@ -199,10 +263,11 @@ public class HTagView: UIView, HTagDelegate {
         if type == .MultiSelect{
             sender.selected = !sender.selected
         }
-        (delegate as? HTagViewDelegate)?.tagView?(self, tagSelectionDidChange: selectedTagsTitle)
+        (delegate as? HTagViewDelegate)?.tagView?(self, tagSelectionDidChange: selectedTagTitles)
     }
     
     override public func intrinsicContentSize() -> CGSize {
+        print(frame.size)
         if tags.count == 0{
             return CGSize(width: UIViewNoIntrinsicMetric, height: 0)
         }else{
