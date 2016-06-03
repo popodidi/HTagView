@@ -63,7 +63,11 @@ override func viewDidLoad(){
 ```
 ### Set Tags
 ```swift
-	tagView.setTagsWithTitle(["Hey!","This","is","a","HTagView."])
+    tagView.setTagsWithTitles(["Hey!","This","is","a","HTagView."])
+    tagView.selectTagWithTitles(["Hey!", "a"])
+    tagView.deselectTagWithTitles(["Hey!"])
+    tagView.addTagWithTitle("This")
+    tagView.removeTagWithTitle("Hey!")
 ```
 ### Methods Called for User Interaction
 ```swift
@@ -87,7 +91,7 @@ class ViewController: UIViewController, HTagViewDelegate{
 ```
 ## Author
 
-[Hao](changhao@haostudio.cc)
+Hao
 
 
 ## License

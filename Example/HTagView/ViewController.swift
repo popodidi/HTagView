@@ -25,7 +25,9 @@ class ViewController: UIViewController, HTagViewDelegate {
         tagView1.tagSecondBackColor = UIColor.lightGrayColor()
         tagView1.tagSecondTextColor = UIColor.darkTextColor()
         tagView1.tagContentEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
-        tagView1.setTagsWithTitle(["Hey!","This","is","a","HTagView."])
+        tagView1.setTagsWithTitles(["Hey!","This","is","a","HTagView."])
+        tagView1.addTagWithTitle("Test")
+        tagView1.removeTagWithTitle("This")
         
         tagView2.type = .MultiSelect
         tagView2.delegate = self
@@ -37,7 +39,11 @@ class ViewController: UIViewController, HTagViewDelegate {
         tagView2.tagSecondBackColor = UIColor.lightGrayColor()
         tagView2.tagSecondTextColor = UIColor.darkTextColor()
         tagView2.tagContentEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
-        tagView2.setTagsWithTitle(["Hey!","This","is","a","HTagView."])
+        tagView2.setTagsWithTitles(["Hey!","This","is","a","HTagView."])
+        tagView2.selectTagWithTitles(["Hey!", "a"])
+        tagView2.deselectTagWithTitles(["Hey!"])
+        tagView2.removeTagWithTitle("This")
+        tagView2.removeTagWithTitle("Hey!")
     }
     
     // MARK: - HTagViewDelegate

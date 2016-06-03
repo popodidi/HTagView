@@ -183,16 +183,11 @@ public class HTagView: UIView, HTagDelegate {
         }
     }
     
-//    required public init?(coder aDecoder: NSCoder) {
-//        super.init(coder: aDecoder)
-//    }
-//    override public init(frame: CGRect) {
-//        super.init(frame: frame)
-//    }
-    
-    // MARK: - Set Tags
-    
-    public func setTagsWithTitle(titles: [String]){
+    // MARK: - Manipulate Tags
+    /**
+     Remove all the exisiting HTags and set with titles
+     */
+    public func setTagsWithTitles(titles: [String]){
         var theTags = [HTag]()
         for title in titles{
             let tag = HTag()
@@ -217,6 +212,88 @@ public class HTagView: UIView, HTagDelegate {
         invalidateIntrinsicContentSize()
     }
     
+    /**
+     Add tags with title
+     */
+    public func addTagWithTitle(title: String){
+        let tag = HTag()
+        tag.delegate = self
+        switch type {
+        case .Cancel:
+            tag.withCancelButton = true
+            tag.selected = false
+        case .MultiSelect:
+            tag.withCancelButton = false
+            tag.selected = true
+        }
+        tag.contentInsets = tagContentEdgeInsets
+        tag.titleLabel?.font = tag.titleLabel?.font.fontWithSize(fontSize)
+        tag.setBackColors(tagMainBackColor, secondColor: tagSecondBackColor)
+        tag.setTextColors(tagMainTextColor, secondColor: tagSecondTextColor)
+        tag.layer.cornerRadius = tag.frame.height * tagCornerRadiusToHeightRatio
+        tag.tagString = title
+        
+        tags.append(tag)
+        
+        invalidateIntrinsicContentSize()
+    }
+    
+    /**
+     Remove tag with title. The delegate method `tagView(_:didCancelTag:)` will be called.
+     */
+    public func removeTagWithTitle(title: String){
+        
+        var tagString : String?
+        for tagIndex in 0..<tags.count{
+            if tags[tagIndex].tagString == title{
+                tags[tagIndex].removeFromSuperview()
+                tagString = tags[tagIndex].tagString
+                tags.removeAtIndex(tagIndex)
+                break
+            }
+        }
+        layoutSubviews()
+        invalidateIntrinsicContentSize()
+        
+        if let cancelledTagString = tagString where type == .Cancel{
+            (delegate as? HTagViewDelegate)?.tagView?(self, didCancelTag: cancelledTagString)
+        }
+    }
+    
+    /**
+     Select on tag with titles in `.MultiSelect` type HTagView. The delegate method `tagView(_:tagSelectionDidChange:)` will be called.
+     */
+    public func selectTagWithTitles(titles: [String]){
+        if type == .MultiSelect{
+            for tagIndex in 0..<tags.count{
+                for title in titles{
+                    if tags[tagIndex].tagString == title{
+                        tags[tagIndex].selected = false
+                        break
+                    }
+                }
+            }
+        }
+        (delegate as? HTagViewDelegate)?.tagView?(self, tagSelectionDidChange: selectedTagTitles)
+    }
+    /**
+     Deselect on tag with titles in `.MultiSelect` type HTagView. The delegate method `tagView(_:tagSelectionDidChange:)` will be called.
+     */
+    public func deselectTagWithTitles(titles: [String]){
+        if type == .MultiSelect{
+            for tagIndex in 0..<tags.count{
+                for title in titles{
+                    if tags[tagIndex].tagString == title{
+                        tags[tagIndex].selected = true
+                        break
+                    }
+                }
+            }
+        }
+        (delegate as? HTagViewDelegate)?.tagView?(self, tagSelectionDidChange: selectedTagTitles)
+    }
+    
+    // MARK: - Subclassing UIView
     override public func layoutSubviews() {
         if tags.count == 0{
             self.frame.size = CGSize(width: self.frame.width, height: 0)
@@ -234,18 +311,14 @@ public class HTagView: UIView, HTagDelegate {
             self.frame.size = CGSize(width: self.frame.width, height: y + (tags.last?.frame.height ?? 0) + marg )
         }
     }
-    
-    // MARK: - Manipulate Tag
-    public func selectTagWithTitles(titles: [String]){
-        for tag in tags{
-            for title in titles{
-                if tag.tagString == title{
-                    tag.selected = false
-                }
-            }
+    override public func intrinsicContentSize() -> CGSize {
+        if tags.count == 0{
+            return CGSize(width: UIViewNoIntrinsicMetric, height: 0)
+        }else{
+            let height = (tags.last?.frame.origin.y ?? 0) + (tags.last?.frame.height ?? 0) + marg
+            return CGSize(width: UIViewNoIntrinsicMetric, height: height )
         }
     }
-    
     
     // MARK: - Tag Delegate
     func tagCancelled(sender: HTag) {
@@ -266,14 +339,6 @@ public class HTagView: UIView, HTagDelegate {
         (delegate as? HTagViewDelegate)?.tagView?(self, tagSelectionDidChange: selectedTagTitles)
     }
     
-    override public func intrinsicContentSize() -> CGSize {
-        print(frame.size)
-        if tags.count == 0{
-            return CGSize(width: UIViewNoIntrinsicMetric, height: 0)
-        }else{
-            let height = (tags.last?.frame.origin.y ?? 0) + (tags.last?.frame.height ?? 0) + marg
-            return CGSize(width: UIViewNoIntrinsicMetric, height: height )
-        }
-    }
+    
 }
 
