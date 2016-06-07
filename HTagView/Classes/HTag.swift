@@ -104,7 +104,9 @@ class HTag: UIButton {
     }
     
     func configureCancelButton(){
-        cancelButton.setBackgroundImage(UIImage(named: "close_small", inBundle: NSBundle(forClass: self.classForCoder), compatibleWithTraitCollection: nil), forState: .Normal)
+        let image = UIImage(named: "close_small", inBundle: NSBundle(forClass: self.classForCoder), compatibleWithTraitCollection: nil)?.imageWithRenderingMode(.AlwaysTemplate)
+        cancelButton.setBackgroundImage(image , forState: .Normal)
+        cancelButton.tintColor = self.currentTitleColor
         
         cancelButton.contentVerticalAlignment = .Fill;
         cancelButton.contentHorizontalAlignment = .Fill;

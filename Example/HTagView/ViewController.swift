@@ -22,6 +22,7 @@ class ViewController: UIViewController, HTagViewDelegate {
         tagView1.btwLines = 20
         tagView1.fontSize = 15
         tagView1.tagMainBackColor = UIColor(red: 121/255, green: 196/255, blue: 1, alpha: 1)
+        tagView1.tagMainTextColor = UIColor.whiteColor()
         tagView1.tagSecondBackColor = UIColor.lightGrayColor()
         tagView1.tagSecondTextColor = UIColor.darkTextColor()
         tagView1.tagContentEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
@@ -39,6 +40,8 @@ class ViewController: UIViewController, HTagViewDelegate {
         tagView2.tagSecondBackColor = UIColor.lightGrayColor()
         tagView2.tagSecondTextColor = UIColor.darkTextColor()
         tagView2.tagContentEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
+        tagView2.tagBorderColor = UIColor.blackColor().CGColor
+        tagView2.tagBorderWidth = 2
         tagView2.setTagsWithTitles(["Hey!","This","is","a","HTagView."])
         tagView2.selectTagWithTitles(["Hey!", "a"])
         tagView2.deselectTagWithTitles(["Hey!"])

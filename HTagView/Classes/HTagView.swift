@@ -96,6 +96,31 @@ public class HTagView: UIView, HTagDelegate {
     @IBInspectable
     public var tagSecondTextColor : UIColor = UIColor.darkTextColor()
     /**
+     The border width to height ratio of HTags.
+     */
+    @IBInspectable
+    public var tagBorderWidth :CGFloat = CGFloat(0){
+        didSet{
+            for tag in tags{
+                tag.layer.borderWidth = tagBorderWidth
+            }
+            layoutIfNeeded()
+        }
+    }
+    /**
+     The border color to height ratio of HTags.
+     */
+    @IBInspectable
+    public var tagBorderColor :CGColor? = nil{
+        didSet{
+            for tag in tags{
+                tag.layer.borderColor = tagBorderColor
+            }
+            layoutIfNeeded()
+        }
+    }
+    
+    /**
      The corner radius to height ratio of HTags.
      */
     @IBInspectable
@@ -205,6 +230,8 @@ public class HTagView: UIView, HTagDelegate {
             tag.setBackColors(tagMainBackColor, secondColor: tagSecondBackColor)
             tag.setTextColors(tagMainTextColor, secondColor: tagSecondTextColor)
             tag.layer.cornerRadius = tag.frame.height * tagCornerRadiusToHeightRatio
+            tag.layer.borderColor = tagBorderColor
+            tag.layer.borderWidth = tagBorderWidth
             tag.tagString = title
             theTags.append(tag)
         }
@@ -231,6 +258,8 @@ public class HTagView: UIView, HTagDelegate {
         tag.setBackColors(tagMainBackColor, secondColor: tagSecondBackColor)
         tag.setTextColors(tagMainTextColor, secondColor: tagSecondTextColor)
         tag.layer.cornerRadius = tag.frame.height * tagCornerRadiusToHeightRatio
+        tag.layer.borderColor = tagBorderColor
+        tag.layer.borderWidth = tagBorderWidth
         tag.tagString = title
         
         tags.append(tag)
