@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>HTagView by popodidi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">HTagView</h1>
+      <h2 class="project-tagline">A customized tag view subclassing UIView.</h2>
+      <a href="https://github.com/popodidi/HTagView" class="btn">View on GitHub</a>
+      <a href="https://github.com/popodidi/HTagView/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/popodidi/HTagView/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="htagview" class="anchor" href="#htagview" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>HTagView</h1>
+
+
+
+<p><a href="http://cocoapods.org/pods/HTagView"><img src="https://img.shields.io/cocoapods/v/HTagView.svg?style=flat" alt="Version"></a>
+<a href="http://cocoapods.org/pods/HTagView"><img src="https://img.shields.io/cocoapods/l/HTagView.svg?style=flat" alt="License"></a>
+<a href="http://cocoapods.org/pods/HTagView"><img src="https://img.shields.io/cocoapods/p/HTagView.svg?style=flat" alt="Platform"></a></p>
+
+<p>HTagView is a customized tag view subclassing UIView where tag could be either with cancel button or multiseletable.</p>
+
+<h3>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Features</h3>
+
+<ul>
+<li>
+<code>.Cancel</code> and <code>.MultiSelect</code> types available (see below)</li>
+<li>Customized configuration</li>
+<li>Supporting storyboard and autolayout</li>
+</ul>
+
+<h3>
+<a id="demo" class="anchor" href="#demo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Demo</h3>
+
+<p><img src="https://github.com/popodidi/HTagView/blob/master/demo.gif?raw=true" alt=""></p>
+
+<h2>
+<a id="example" class="anchor" href="#example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example</h2>
+
+<p>To run the example project, clone the repo, and run <code>pod install</code> from the Example directory first.</p>
+
+
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>HTagView is available through <a href="http://cocoapods.org">CocoaPods</a>. To install
+it, simply add the following line to your Podfile:</p>
+
+<div class="highlight highlight-source-ruby"><pre>pod <span class="pl-s"><span class="pl-pds">"</span>HTagView<span class="pl-pds">"</span></span></pre></div>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
+
+<h3>
+<a id="configure-htagview" class="anchor" href="#configure-htagview" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Configure HTagView</h3>
+
+<p>These properties support <code>@IBDesignable</code> as well.</p>
+
+<div class="highlight highlight-source-swift"><pre><span class="pl-k">override</span> <span class="pl-k">func</span> <span class="pl-en">viewDidLoad</span>(){
+    <span class="pl-k">super</span><span class="pl-k">.</span>viewDidLoad()
+    <span class="pl-c">//.</span>
+    <span class="pl-c">//.</span>
+    <span class="pl-c">//.</span>
+
+    <span class="pl-c">// configure tagView</span>
+    tagView<span class="pl-k">.</span>delegate <span class="pl-k">=</span> <span class="pl-k">self</span>
+    tagView<span class="pl-k">.</span>type <span class="pl-k">=</span> <span class="pl-k">.</span>Cancel <span class="pl-c">// or .MultiSelect</span>
+    tagView<span class="pl-k">.</span>marg <span class="pl-k">=</span> <span class="pl-c1">20</span>
+    tagView<span class="pl-k">.</span>btwTags <span class="pl-k">=</span> <span class="pl-c1">20</span>
+    tagView<span class="pl-k">.</span>btwLines <span class="pl-k">=</span> <span class="pl-c1">20</span>
+    tagView<span class="pl-k">.</span>fontSize <span class="pl-k">=</span> <span class="pl-c1">15</span>
+    tagView<span class="pl-k">.</span>tagMainBackColor <span class="pl-k">=</span> UIColor<span class="pl-k">.</span>blueColor()
+    tagView<span class="pl-k">.</span>tagSecondBackColor <span class="pl-k">=</span> UIColor<span class="pl-k">.</span>lightGrayColor()
+    tagView<span class="pl-k">.</span>tagSecondTextColor <span class="pl-k">=</span> UIColor<span class="pl-k">.</span>darkTextColor()
+    tagView<span class="pl-k">.</span>tagContentEdgeInsets <span class="pl-k">=</span> UIEdgeInsets(top: <span class="pl-c1">10</span>, <span class="pl-k">left</span>: <span class="pl-c1">20</span>, bottom: <span class="pl-c1">10</span>, <span class="pl-k">right</span>: <span class="pl-c1">20</span>)
+}</pre></div>
+
+<h3>
+<a id="set-tags" class="anchor" href="#set-tags" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Set Tags</h3>
+
+<div class="highlight highlight-source-swift"><pre>    tagView<span class="pl-k">.</span>setTagsWithTitles([<span class="pl-s"><span class="pl-pds">"</span>Hey!<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>This<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>is<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>a<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>HTagView.<span class="pl-pds">"</span></span>])
+    tagView<span class="pl-k">.</span>selectTagWithTitles([<span class="pl-s"><span class="pl-pds">"</span>Hey!<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>a<span class="pl-pds">"</span></span>])
+    tagView<span class="pl-k">.</span>deselectTagWithTitles([<span class="pl-s"><span class="pl-pds">"</span>Hey!<span class="pl-pds">"</span></span>])
+    tagView<span class="pl-k">.</span>addTagWithTitle(<span class="pl-s"><span class="pl-pds">"</span>This<span class="pl-pds">"</span></span>)
+    tagView<span class="pl-k">.</span>removeTagWithTitle(<span class="pl-s"><span class="pl-pds">"</span>Hey!<span class="pl-pds">"</span></span>)</pre></div>
+
+<h3>
+<a id="methods-called-for-user-interaction" class="anchor" href="#methods-called-for-user-interaction" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Methods Called for User Interaction</h3>
+
+<div class="highlight highlight-source-swift"><pre><span class="pl-k">class</span> ViewController: UIViewController, HTagViewDelegate{
+    <span class="pl-c">// .</span>
+    <span class="pl-c">// .</span>
+    <span class="pl-c">// .</span>
+
+    <span class="pl-c">// MARK: - HTagViewDelegate</span>
+    <span class="pl-c">// For .MultiSelect type HTagView</span>
+    <span class="pl-k">func</span> <span class="pl-en">tagView</span>(tagView: HTagView, <span class="pl-en">tagSelectionDidChange</span> <span class="pl-smi">tagSelected</span>: [<span class="pl-c1">String</span>]){
+        <span class="pl-c1">print</span>(tagSelected)
+    }
+
+    <span class="pl-c">// For .Cancel type HTagView    </span>
+    <span class="pl-k">func</span> <span class="pl-en">tagView</span>(tagView: HTagView, <span class="pl-en">didCancelTag</span> <span class="pl-smi">tagTitle</span>: <span class="pl-c1">String</span>) {
+        <span class="pl-c1">print</span>(<span class="pl-s"><span class="pl-pds">"</span>tag with title: '<span class="pl-pse">\(</span><span class="pl-s1">tagTitle</span><span class="pl-pse">)</span>' has been removed from tagView<span class="pl-pds">"</span></span>)
+    }
+
+}</pre></div>
+
+<h2>
+<a id="author" class="anchor" href="#author" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Author</h2>
+
+<p>Hao(<a href="https://github.com/popodidi" class="user-mention">@popodidi</a>)</p>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
+
+<p>HTagView is available under the MIT license. See the LICENSE file for more info.</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/popodidi/HTagView">HTagView</a> is maintained by <a href="https://github.com/popodidi">popodidi</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
