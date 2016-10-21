@@ -122,15 +122,15 @@ class HTag: UIButton {
     func setBackColors(mainColor: UIColor, secondColor: UIColor){
         
         UIGraphicsBeginImageContext(CGSize(width: 1, height: 1))
-        CGContextSetFillColorWithColor(UIGraphicsGetCurrentContext(), mainColor.CGColor)
-        CGContextFillRect(UIGraphicsGetCurrentContext(), CGRect(x: 0, y: 0, width: 1, height: 1))
+        CGContextSetFillColorWithColor(UIGraphicsGetCurrentContext()!, mainColor.CGColor)
+        CGContextFillRect(UIGraphicsGetCurrentContext()!, CGRect(x: 0, y: 0, width: 1, height: 1))
         let mainColorImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         self.setBackgroundImage(mainColorImage, forState: .Normal)
         
         UIGraphicsBeginImageContext(CGSize(width: 1, height: 1))
-        CGContextSetFillColorWithColor(UIGraphicsGetCurrentContext(), secondColor.CGColor)
-        CGContextFillRect(UIGraphicsGetCurrentContext(), CGRect(x: 0, y: 0, width: 1, height: 1))
+        CGContextSetFillColorWithColor(UIGraphicsGetCurrentContext()!, secondColor.CGColor)
+        CGContextFillRect(UIGraphicsGetCurrentContext()!, CGRect(x: 0, y: 0, width: 1, height: 1))
         let secondColorImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         self.setBackgroundImage(secondColorImage, forState: .Selected)

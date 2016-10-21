@@ -9,14 +9,15 @@
 import UIKit
 import HTagView
 
-class ViewController: UIViewController, HTagViewDelegate {
+class ViewController: UIViewController, HTagViewDelegate, HTagViewDataSource {
 
     @IBOutlet weak var tagView1: HTagView!
     @IBOutlet weak var tagView2: HTagView!
     override func viewDidLoad() {
         super.viewDidLoad()
-        tagView1.type = .Cancel
+        
         tagView1.delegate = self
+        tagView1.dataSource = self
         tagView1.marg = 20
         tagView1.btwTags = 20
         tagView1.btwLines = 20
@@ -26,12 +27,10 @@ class ViewController: UIViewController, HTagViewDelegate {
         tagView1.tagSecondBackColor = UIColor.lightGrayColor()
         tagView1.tagSecondTextColor = UIColor.darkTextColor()
         tagView1.tagContentEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
-        tagView1.setTagsWithTitles(["Hey!","This","is","a","HTagView."])
-        tagView1.addTagWithTitle("Test")
-        tagView1.removeTagWithTitle("This")
         
-        tagView2.type = .MultiSelect
+        
         tagView2.delegate = self
+        tagView2.dataSource = self
         tagView2.marg = 20
         tagView2.btwTags = 20
         tagView2.btwLines = 20
@@ -42,25 +41,59 @@ class ViewController: UIViewController, HTagViewDelegate {
         tagView2.tagContentEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
         tagView2.tagBorderColor = UIColor.blackColor().CGColor
         tagView2.tagBorderWidth = 2
-        tagView2.setTagsWithTitles(["Hey!","This","is","a","HTagView."])
-        tagView2.selectTagWithTitles(["Hey!", "a"])
-        tagView2.deselectTagWithTitles(["Hey!"])
-        tagView2.removeTagWithTitle("This")
-        tagView2.removeTagWithTitle("Hey!")
-    }
-    
-    // MARK: - HTagViewDelegate
-    func tagView(tagView: HTagView, tagSelectionDidChange tagSelected: [String]){
-        // For .MultiSelect type HTagView
-        print(tagSelected)
+        tagView2.selectTagWithIndex(6)
+        tagView1.reloadData()
+        tagView2.reloadData()
         
     }
     
-    func tagView(tagView: HTagView, didCancelTag tagTitle: String) {
-        // For .Cancel type HTagView
-        print("tag with title: '\(tagTitle)' has been removed from tagView")        
+    // MARK: - Data
+    let tagView1_data = ["Hey!","This","is","a","HTagView."]
+    var tagView2_data = ["Hey!","This","is","a","HTagView", "as", "well."]
+    
+    // MARK: - HTagViewDataSource
+    func numberOfTags(tagView: HTagView) -> Int {
+        switch tagView {
+        case tagView1:
+            return tagView1_data.count
+        case tagView2:
+            return tagView2_data.count
+        default:
+            return 0
+        }
     }
     
+    func tagView(tagView: HTagView, titleOfTagAtIndex index: Int) -> String {
+        switch tagView {
+        case tagView1:
+            return tagView1_data[index]
+        case tagView2:
+            return tagView2_data[index]
+        default:
+            return "???"
+        }
+    }
+    
+    func tagView(tagView: HTagView, tagTypeAtIndex index: Int) -> HTagType {
+        switch tagView {
+        case tagView1:
+            return .MultiSelect
+        case tagView2:
+            return index > 3 ? .MultiSelect : .Cancel
+        default:
+            return Bool(drand48()) ? .MultiSelect : .Cancel
+        }
+    }
+    
+    // MARK: - HTagViewDelegate
+    func tagView(tagView: HTagView, tagSelectionDidChange selectedIndices: [Int]) {
+        print("tag with indices \(selectedIndices) are selected")
+    }
+    func tagView(tagView: HTagView, didCancelTagAtIndex index: Int) {
+        print("tag with index: '\(index)' has to be removed from tagView")
+        tagView2_data.removeAtIndex(index)
+        tagView.reloadData()
+    }
     
 
 }
