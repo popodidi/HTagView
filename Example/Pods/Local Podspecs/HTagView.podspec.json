@@ -1,24 +1,23 @@
 {
   "name": "HTagView",
-  "version": "0.1.0",
-  "summary": "A short description of HTagView.",
-  "description": "TODO: Add long description of the pod here.",
-  "homepage": "https://github.com/<GITHUB_USERNAME>/HTagView",
+  "version": "2.0.2",
+  "summary": "A customized tag view sublassing UIView",
+  "description": "A customized tag view sublassing UIView where tag could be either with cancel button or multiseletable.",
+  "homepage": "https://github.com/popodidi/HTagView",
   "license": "MIT",
   "authors": {
-    "Chang, Hao": "popodidi@livemail.tw"
+    "Hao": "changhao@haostudio.cc"
   },
   "source": {
-    "git": "https://github.com/<GITHUB_USERNAME>/HTagView.git",
-    "tag": "0.1.0"
+    "git": "https://github.com/popodidi/HTagView.git",
+    "tag": "2.0.2"
   },
   "platforms": {
     "ios": "8.0"
   },
   "source_files": "HTagView/Classes/**/*",
-  "resource_bundles": {
-    "HTagView": [
-      "HTagView/Assets/**/*.{png,jpeg,jpg,storyboard,xib}"
-    ]
-  }
+  "resources": [
+    "HTagView/Assets/*.{xcassets,png,jpeg,jpg,storyboard,xib}"
+  ],
+  "frameworks": "UIKit"
 }
