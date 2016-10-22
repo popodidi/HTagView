@@ -2,6 +2,7 @@
 
 ### 2.0.0
 - Swift 2.3
+- Single selection feature
 - Better implementation of MVC design patter
 	- `HTagViewDataSource`
 	- `HTagViewDelegate`
