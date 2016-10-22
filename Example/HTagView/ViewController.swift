@@ -24,9 +24,9 @@ class ViewController: UIViewController, HTagViewDelegate, HTagViewDataSource {
         tagView1.btwLines = 20
         tagView1.fontSize = 15
         tagView1.tagMainBackColor = UIColor(red: 121/255, green: 196/255, blue: 1, alpha: 1)
-        tagView1.tagMainTextColor = UIColor.whiteColor()
-        tagView1.tagSecondBackColor = UIColor.lightGrayColor()
-        tagView1.tagSecondTextColor = UIColor.darkTextColor()
+        tagView1.tagMainTextColor = UIColor.white
+        tagView1.tagSecondBackColor = UIColor.lightGray
+        tagView1.tagSecondTextColor = UIColor.darkText
         tagView1.tagContentEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
         
         
@@ -37,10 +37,10 @@ class ViewController: UIViewController, HTagViewDelegate, HTagViewDataSource {
         tagView2.btwLines = 20
         tagView2.fontSize = 15
         tagView2.tagMainBackColor = UIColor(red: 1, green: 130/255, blue: 103/255, alpha: 1)
-        tagView2.tagSecondBackColor = UIColor.lightGrayColor()
-        tagView2.tagSecondTextColor = UIColor.darkTextColor()
+        tagView2.tagSecondBackColor = UIColor.lightGray
+        tagView2.tagSecondTextColor = UIColor.darkText
         tagView2.tagContentEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
-        tagView2.tagBorderColor = UIColor.blackColor().CGColor
+        tagView2.tagBorderColor = UIColor.black.cgColor
         tagView2.tagBorderWidth = 2
         
         
@@ -58,7 +58,7 @@ class ViewController: UIViewController, HTagViewDelegate, HTagViewDataSource {
     var tagView2_data = ["Hey!","This","is","a","HTagView", "as", "well."]
     
     // MARK: - HTagViewDataSource
-    func numberOfTags(tagView: HTagView) -> Int {
+    func numberOfTags(_ tagView: HTagView) -> Int {
         switch tagView {
         case tagView1:
             return tagView1_data.count
@@ -69,7 +69,7 @@ class ViewController: UIViewController, HTagViewDelegate, HTagViewDataSource {
         }
     }
     
-    func tagView(tagView: HTagView, titleOfTagAtIndex index: Int) -> String {
+    func tagView(_ tagView: HTagView, titleOfTagAtIndex index: Int) -> String {
         switch tagView {
         case tagView1:
             return tagView1_data[index]
@@ -80,24 +80,24 @@ class ViewController: UIViewController, HTagViewDelegate, HTagViewDataSource {
         }
     }
     
-    func tagView(tagView: HTagView, tagTypeAtIndex index: Int) -> HTagType {
+    func tagView(_ tagView: HTagView, tagTypeAtIndex index: Int) -> HTagType {
         switch tagView {
         case tagView1:
-            return .Select
+            return .select
         case tagView2:
-            return index > 3 ? .Select : .Cancel
+            return index > 3 ? .select : .cancel
         default:
-            return Bool(drand48()) ? .Select : .Cancel
+            return .select
         }
     }
     
     // MARK: - HTagViewDelegate
-    func tagView(tagView: HTagView, tagSelectionDidChange selectedIndices: [Int]) {
+    func tagView(_ tagView: HTagView, tagSelectionDidChange selectedIndices: [Int]) {
         print("tag with indices \(selectedIndices) are selected")
     }
-    func tagView(tagView: HTagView, didCancelTagAtIndex index: Int) {
+    func tagView(_ tagView: HTagView, didCancelTagAtIndex index: Int) {
         print("tag with index: '\(index)' has to be removed from tagView")
-        tagView2_data.removeAtIndex(index)
+        tagView2_data.remove(at: index)
         tagView.reloadData()
     }
     
