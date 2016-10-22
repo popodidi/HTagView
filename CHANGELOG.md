@@ -1,6 +1,9 @@
 # Change Log
 
-### 2.0.0
+### 2.1.x
+- Swift 3.0
+
+### 2.0.x
 - Swift 2.3
 - Single selection feature
 - Better implementation of MVC design patter

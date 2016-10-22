@@ -36,6 +36,11 @@ it, simply add the following line to your Podfile:
 pod "HTagView"
 ```
 
+Swift Version | HTagView Version
+----- | -----
+Swift 2.3 | 2.0.x
+Swift 3.0 | 2.1.0 or later
+
 ## Usage
 ### Configure HTagView
 These properties support `@IBDesignable` as well.
