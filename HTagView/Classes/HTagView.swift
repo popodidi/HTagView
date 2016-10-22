@@ -209,7 +209,7 @@ public class HTagView: UIView, HTagDelegate {
             return
         }
         
-        var selection = selectedIndices
+        let selection = selectedIndices
         
         for tag in tags {
             tag.removeFromSuperview()
@@ -288,7 +288,6 @@ public class HTagView: UIView, HTagDelegate {
             if i != index && !multiselect{
                 tag.selected = false
             }else if i == index{
-                print("\(i) will be selected")
                 tag.selected = true
             }
         }
