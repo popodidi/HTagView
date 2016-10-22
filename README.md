@@ -9,9 +9,11 @@ HTagView is a customized tag view sublassing UIView where tag could be either wi
 
 ### Features
 
-- `.Cancel` and `.MultiSelect` types available (see below)
+- `.Cancel` and `.Select` tag types available (see below)
+- Single / Multi selection for `.Select` tags
+- `HTagViewDataSource` and `HTagViewDelegte` protocols
 - Customized configuration
-- Supporting storyboard and autolayout
+- Supporting `!IBDesignable` and autolayout
 
 ### Demo
 ![](demo.gif)
@@ -44,48 +46,61 @@ override func viewDidLoad(){
 	//.
 	//.
 	//.
-	
+
 	// configure tagView
 	tagView.delegate = self
-	tagView.type = .Cancel // or .MultiSelect
-	tagView.marg = 20
-	tagView.btwTags = 20
-	tagView.btwLines = 20
-	tagView.fontSize = 15
-	tagView.tagMainBackColor = UIColor.blueColor()
-	tagView.tagSecondBackColor = UIColor.lightGrayColor()
-	tagView.tagSecondTextColor = UIColor.darkTextColor()
-	tagView.tagContentEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
+    tagView.dataSource = self
+    tagView.marg = 20
+    tagView.btwTags = 20
+    tagView.btwLines = 20
+    tagView.fontSize = 15
+    tagView.tagMainBackColor = UIColor(red: 1, green: 130/255, blue: 103/255, alpha: 1)
+    tagView.tagSecondBackColor = UIColor.lightGrayColor()
+    tagView.tagSecondTextColor = UIColor.darkTextColor()
+    tagView.tagContentEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
+    tagView.tagBorderColor = UIColor.blackColor().CGColor
+    tagView.tagBorderWidth = 2
 }
 ```
-### Set Tags
+### Data Source
 ```swift
-    tagView.setTagsWithTitles(["Hey!","This","is","a","HTagView."])
-    tagView.selectTagWithTitles(["Hey!", "a"])
-    tagView.deselectTagWithTitles(["Hey!"])
-    tagView.addTagWithTitle("This")
-    tagView.removeTagWithTitle("Hey!")
-```
-### Methods Called for User Interaction
-```swift
-class ViewController: UIViewController, HTagViewDelegate{
+class ViewController: UIViewController, HTagViewDataSource{
 	// .
 	// .
 	// .
-	
-	// MARK: - HTagViewDelegate
-	// For .MultiSelect type HTagView
-    func tagView(tagView: HTagView, tagSelectionDidChange tagSelected: [String]){
-        print(tagSelected)
-    }
-    
-	// For .Cancel type HTagView	
-	func tagView(tagView: HTagView, didCancelTag tagTitle: String) {
-		print("tag with title: '\(tagTitle)' has been removed from tagView")
-	}
 
+    // MARK: - Data
+    let data = ["Hey!","This","is","a","HTagView."]
+
+    // MARK: - HTagViewDataSource
+    func numberOfTags(tagView: HTagView) -> Int {
+    	return data.count
+    }
+```
+### Delegate
+```swift
+class ViewController: UIViewController, HTagViewDelegate, HTagViewDataSource {
+	// .
+	// .
+	// .
+
+	// MARK: - HTagViewDelegate
+    func tagView(tagView: HTagView, tagSelectionDidChange selectedIndices: [Int]) {
+        print("tag with indices \(selectedIndices) are selected")
+    }
+    func tagView(tagView: HTagView, didCancelTagAtIndex index: Int) {
+        print("tag with index: '\(index)' has to be removed from tagView")
+		data.removeAtIndex(index)
+        tagView.reloadData()
+    }
 }
 ```
+### Manually select/deselect tags
+```swift
+tagView.selectTagAtIndex(6)
+tagView.deselectTagAtIndex(3)
+```
+
 ## Author
 
 Hao
