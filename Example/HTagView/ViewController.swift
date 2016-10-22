@@ -18,6 +18,7 @@ class ViewController: UIViewController, HTagViewDelegate, HTagViewDataSource {
         
         tagView1.delegate = self
         tagView1.dataSource = self
+        tagView1.multiselect = false
         tagView1.marg = 20
         tagView1.btwTags = 20
         tagView1.btwLines = 20
@@ -41,7 +42,12 @@ class ViewController: UIViewController, HTagViewDelegate, HTagViewDataSource {
         tagView2.tagContentEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
         tagView2.tagBorderColor = UIColor.blackColor().CGColor
         tagView2.tagBorderWidth = 2
-        tagView2.selectTagWithIndex(6)
+        
+        
+        tagView2.selectTagAtIndex(6)
+        tagView1.selectTagAtIndex(3)
+        
+        
         tagView1.reloadData()
         tagView2.reloadData()
         
@@ -77,11 +83,11 @@ class ViewController: UIViewController, HTagViewDelegate, HTagViewDataSource {
     func tagView(tagView: HTagView, tagTypeAtIndex index: Int) -> HTagType {
         switch tagView {
         case tagView1:
-            return .MultiSelect
+            return .Select
         case tagView2:
-            return index > 3 ? .MultiSelect : .Cancel
+            return index > 3 ? .Select : .Cancel
         default:
-            return Bool(drand48()) ? .MultiSelect : .Cancel
+            return Bool(drand48()) ? .Select : .Cancel
         }
     }
     
