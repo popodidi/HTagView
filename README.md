@@ -76,6 +76,14 @@ class ViewController: UIViewController, HTagViewDataSource{
     func numberOfTags(tagView: HTagView) -> Int {
     	return data.count
     }
+    func tagView(tagView: HTagView, titleOfTagAtIndex index: Int) -> String {
+        return data[index]
+    }
+
+    func tagView(tagView: HTagView, tagTypeAtIndex index: Int) -> HTagType {
+        return .Select
+    }
+}
 ```
 ### Delegate
 ```swift
