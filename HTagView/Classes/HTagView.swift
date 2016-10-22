@@ -13,49 +13,62 @@ import UIKit
  */
 @objc
 public protocol HTagViewDelegate {
-    optional func tagView(tagView: HTagView, didCancelTag tagTitle: String)
-    optional func tagView(tagView: HTagView, tagSelectionDidChange tagSelected: [String])
+//    optional func tagView(tagView: HTagView, didCancelTag tagTitle: String)
+    optional func tagView(tagView: HTagView, didCancelTagAtIndex index: Int)
+//    optional func tagView(tagView: HTagView, tagSelectionDidChange tagSelected: [String])
+    optional func tagView(tagView: HTagView, tagSelectionDidChange selectedIndices: [Int])
 }
 
 /**
- HTagView comes with two types, `.Cancel` and `.MultiSelect`.
+ HTagViewDataSource is a protocol to implement for data source of the HTagView.
  */
-public enum HTagViewType{
-    case Cancel, MultiSelect
+public protocol HTagViewDataSource {
+    func numberOfTags(tagView: HTagView) -> Int
+    func tagView(tagView: HTagView, titleOfTagAtIndex index: Int) -> String
+    func tagView(tagView: HTagView, tagTypeAtIndex index: Int) -> HTagType
 }
+
+/**
+ HTag comes with two types, `.Cancel` and `.Select`.
+ */
+public enum HTagType{
+    case Cancel, Select
+}
+
+
+/**
+ HTagView comes with two types, `.Cancel` and `.Select`.
+ */
+//public enum HTagViewType{
+//    case Cancel, Select
+//}
 
 
 @IBDesignable
 public class HTagView: UIView, HTagDelegate {
     
+    // MARK: - DataSource
+    /**
+     HTagViewDataSource
+     */
+    public var dataSource : HTagViewDataSource?{
+        didSet{
+            reloadData()
+        }
+    }
+    
     // MARK: - Delegate
     /**
      HTagViewDelegate
      */
-    @IBOutlet
-    public var delegate : AnyObject?
+    public var delegate : HTagViewDelegate?
     
     // MARK: - HTagView Configuration
     /**
-     Type of the HTagView
+     HTagView multiselect
      */
     @IBInspectable
-    public var type : HTagViewType = .MultiSelect{
-        didSet{
-            switch type{
-            case .Cancel:
-                for tag in tags{
-                    tag.withCancelButton = true
-                    tag.selected = true
-                }
-            case .MultiSelect:
-                for tag in tags{
-                    tag.withCancelButton = false
-                }
-            }
-        }
-    }
-    
+    public var multiselect : Bool = true
     /**
      HTagView margin
      */
@@ -75,23 +88,23 @@ public class HTagView: UIView, HTagDelegate {
     // MARK: - HTag Configuration
     /**
      - `.Cancel` type: background color for all tags.
-     - `.MultiSelect` type: background color for the selected tags.
+     - `.Select` type: background color for the selected tags.
      */
     @IBInspectable
     public var tagMainBackColor : UIColor = UIColor(colorLiteralRed: 100/255, green: 200/255, blue: 205/255, alpha: 1)
     /**
      - `.Cancel` type: text color for all tags.
-     - `.MultiSelect` type: text color for the selected tags.
+     - `.Select` type: text color for the selected tags.
      */
     @IBInspectable
     public var tagMainTextColor : UIColor = UIColor.whiteColor()
     /**
-     - `.MultiSelect` type: background color for the unselected tags.
+     - `.Select` type: background color for the unselected tags.
      */
     @IBInspectable
     public var tagSecondBackColor : UIColor = UIColor.lightGrayColor()
     /**
-     - `.MultiSelect` type: text color for the unselected tags.
+     - `.Select` type: text color for the unselected tags.
      */
     @IBInspectable
     public var tagSecondTextColor : UIColor = UIColor.darkTextColor()
@@ -157,73 +170,62 @@ public class HTagView: UIView, HTagDelegate {
             invalidateIntrinsicContentSize()
         }
     }
-    
-    // MARK: - APIs
     /**
-     Total number of HTags in HTagView
+     Indices of selected tags.
      */
-    public var numberOfTags : Int{
+    public var selectedIndices: [Int]{
         get{
-            return tags.count
-        }
-    }
-    
-    /**
-     All the titles of HTags
-     */
-    public var tagTitles : [String]{
-        get{
-            var titles = [String]()
-            for tag in tags{
-                titles.append(tag.tagString)
-            }
-            return titles
-        }
-    }
-    
-    /**
-     All the titles of selected HTags
-     */
-    public var selectedTagTitles: [String]{
-        get{
-            var selectedTitles = [String]()
-            for tag in tags{
-                if !tag.selected{
-                    selectedTitles.append(tag.tagString)
+            var selectedIndexes = [Int]()
+            for (index, tag) in tags.enumerate(){
+                if !tag.withCancelButton && tag.selected{
+                    selectedIndexes.append(index)
                 }
             }
-            return selectedTitles
+            return selectedIndexes
         }
     }
     
-    var tags : [HTag] = []{
-        didSet{
-            for tag in oldValue{
-                tag.removeFromSuperview()
-            }
-            for tag in tags{
-                addSubview(tag)
-            }
-            layoutSubviews()
-        }
+    var tags : [HTag] = []
+    
+    // MARK: - init
+    override public init(frame: CGRect){
+        super.init(frame: frame)
+        configure()
+        reloadData(false)
     }
     
-    // MARK: - Manipulate Tags
-    /**
-     Remove all the exisiting HTags and set with titles
-     */
-    public func setTagsWithTitles(titles: [String]){
-        var theTags = [HTag]()
-        for title in titles{
+    required public init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        configure()
+        reloadData(false)
+    }
+    
+    func configure(){
+    }
+    
+    // MARK: - reload
+    public func reloadData(preserveSelectionState: Bool = true){
+        guard let dataSource = dataSource else {
+            return
+        }
+        
+        var selection = selectedIndices
+        
+        for tag in tags {
+            tag.removeFromSuperview()
+        }
+        tags = []
+        
+        for index in  0 ..< dataSource.numberOfTags(self) {
             let tag = HTag()
             tag.delegate = self
-            switch type {
+            switch dataSource.tagView(self, tagTypeAtIndex: index) {
             case .Cancel:
                 tag.withCancelButton = true
-                tag.selected = false
-            case .MultiSelect:
-                tag.withCancelButton = false
                 tag.selected = true
+            case .Select:
+                tag.withCancelButton = false
+                tag.selected = preserveSelectionState ? selection.contains(index) : false
             }
             tag.contentInsets = tagContentEdgeInsets
             tag.titleLabel?.font = tag.titleLabel?.font.fontWithSize(fontSize)
@@ -232,99 +234,22 @@ public class HTagView: UIView, HTagDelegate {
             tag.layer.cornerRadius = tag.frame.height * tagCornerRadiusToHeightRatio
             tag.layer.borderColor = tagBorderColor
             tag.layer.borderWidth = tagBorderWidth
-            tag.tagString = title
-            theTags.append(tag)
+            tag.tagString = dataSource.tagView(self, titleOfTagAtIndex: index)
+            addSubview(tag)
+            tags.append(tag)
         }
-        tags = theTags
-        invalidateIntrinsicContentSize()
-    }
-    
-    /**
-     Add tags with title
-     */
-    public func addTagWithTitle(title: String){
-        let tag = HTag()
-        tag.delegate = self
-        switch type {
-        case .Cancel:
-            tag.withCancelButton = true
-            tag.selected = false
-        case .MultiSelect:
-            tag.withCancelButton = false
-            tag.selected = true
-        }
-        tag.contentInsets = tagContentEdgeInsets
-        tag.titleLabel?.font = tag.titleLabel?.font.fontWithSize(fontSize)
-        tag.setBackColors(tagMainBackColor, secondColor: tagSecondBackColor)
-        tag.setTextColors(tagMainTextColor, secondColor: tagSecondTextColor)
-        tag.layer.cornerRadius = tag.frame.height * tagCornerRadiusToHeightRatio
-        tag.layer.borderColor = tagBorderColor
-        tag.layer.borderWidth = tagBorderWidth
-        tag.tagString = title
         
-        tags.append(tag)
-        
-        invalidateIntrinsicContentSize()
-    }
-    
-    /**
-     Remove tag with title. The delegate method `tagView(_:didCancelTag:)` will be called.
-     */
-    public func removeTagWithTitle(title: String){
-        
-        var tagString : String?
-        for tagIndex in 0..<tags.count{
-            if tags[tagIndex].tagString == title{
-                tags[tagIndex].removeFromSuperview()
-                tagString = tags[tagIndex].tagString
-                tags.removeAtIndex(tagIndex)
-                break
-            }
-        }
         layoutSubviews()
         invalidateIntrinsicContentSize()
-        
-        if let cancelledTagString = tagString where type == .Cancel{
-            (delegate as? HTagViewDelegate)?.tagView?(self, didCancelTag: cancelledTagString)
-        }
-    }
-    
-    /**
-     Select on tag with titles in `.MultiSelect` type HTagView. The delegate method `tagView(_:tagSelectionDidChange:)` will be called.
-     */
-    public func selectTagWithTitles(titles: [String]){
-        if type == .MultiSelect{
-            for tagIndex in 0..<tags.count{
-                for title in titles{
-                    if tags[tagIndex].tagString == title{
-                        tags[tagIndex].selected = false
-                        break
-                    }
-                }
-            }
-        }
-        (delegate as? HTagViewDelegate)?.tagView?(self, tagSelectionDidChange: selectedTagTitles)
-    }
-    /**
-     Deselect on tag with titles in `.MultiSelect` type HTagView. The delegate method `tagView(_:tagSelectionDidChange:)` will be called.
-     */
-    public func deselectTagWithTitles(titles: [String]){
-        if type == .MultiSelect{
-            for tagIndex in 0..<tags.count{
-                for title in titles{
-                    if tags[tagIndex].tagString == title{
-                        tags[tagIndex].selected = true
-                        break
-                    }
-                }
-            }
-        }
-        (delegate as? HTagViewDelegate)?.tagView?(self, tagSelectionDidChange: selectedTagTitles)
     }
     
     // MARK: - Subclassing UIView
     override public func layoutSubviews() {
-        if tags.count == 0{
+        guard let dataSource = dataSource else {
+            return
+        }
+        
+        if dataSource.numberOfTags(self) == 0{
             self.frame.size = CGSize(width: self.frame.width, height: 0)
         }else{
             var x = marg
@@ -340,6 +265,7 @@ public class HTagView: UIView, HTagDelegate {
             self.frame.size = CGSize(width: self.frame.width, height: y + (tags.last?.frame.height ?? 0) + marg )
         }
     }
+    
     override public func intrinsicContentSize() -> CGSize {
         if tags.count == 0{
             return CGSize(width: UIViewNoIntrinsicMetric, height: 0)
@@ -349,23 +275,56 @@ public class HTagView: UIView, HTagDelegate {
         }
     }
     
+    // MARK: - Manipulate Tags
+    /**
+     Select on tag with titles in `.Select` type HTagView. The delegate method `tagView(_:tagSelectionDidChange:)` will be called.
+     */
+    public func selectTagAtIndex(index: Int){
+        for (i, tag) in tags.enumerate() {
+            guard let type = dataSource?.tagView(self, tagTypeAtIndex: i) where type == .Select else {
+                continue
+            }
+            
+            if i != index && !multiselect{
+                tag.selected = false
+            }else if i == index{
+                print("\(i) will be selected")
+                tag.selected = true
+            }
+        }
+    }
+    /**
+     Deselect on tag with titles in `.Select` type HTagView. The delegate method `tagView(_:tagSelectionDidChange:)` will be called.
+     */
+    public func deselectTagAtIndex(index: Int){
+        guard let type = dataSource?.tagView(self, tagTypeAtIndex: index) where type == .Select else {
+            return
+        }
+        
+        tags[index].selected = false
+    }
+    
     // MARK: - Tag Delegate
     func tagCancelled(sender: HTag) {
-        if let index = tags.indexOf(sender){
-            tags.removeAtIndex(index)
-            sender.removeFromSuperview()
+        guard let index = tags.indexOf(sender) else{
+            return
         }
         
-        layoutSubviews()
-        invalidateIntrinsicContentSize()
-        
-        (delegate as? HTagViewDelegate)?.tagView?(self, didCancelTag: sender.tagString)
+        delegate?.tagView?(self, didCancelTagAtIndex: index)
     }
     func tagClicked(sender: HTag){
-        if type == .MultiSelect{
-            sender.selected = !sender.selected
+        guard let index = tags.indexOf(sender) else{
+            return
         }
-        (delegate as? HTagViewDelegate)?.tagView?(self, tagSelectionDidChange: selectedTagTitles)
+        if dataSource?.tagView(self, tagTypeAtIndex: index) == .Select{
+            if sender.selected {
+                deselectTagAtIndex(index)
+            }else{
+                selectTagAtIndex(index)
+            }
+        }
+        
+        delegate?.tagView?(self, tagSelectionDidChange: selectedIndices)
     }
     
     

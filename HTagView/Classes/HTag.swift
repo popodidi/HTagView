@@ -122,23 +122,23 @@ class HTag: UIButton {
     func setBackColors(mainColor: UIColor, secondColor: UIColor){
         
         UIGraphicsBeginImageContext(CGSize(width: 1, height: 1))
-        CGContextSetFillColorWithColor(UIGraphicsGetCurrentContext(), mainColor.CGColor)
-        CGContextFillRect(UIGraphicsGetCurrentContext(), CGRect(x: 0, y: 0, width: 1, height: 1))
-        let mainColorImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        self.setBackgroundImage(mainColorImage, forState: .Normal)
-        
-        UIGraphicsBeginImageContext(CGSize(width: 1, height: 1))
-        CGContextSetFillColorWithColor(UIGraphicsGetCurrentContext(), secondColor.CGColor)
-        CGContextFillRect(UIGraphicsGetCurrentContext(), CGRect(x: 0, y: 0, width: 1, height: 1))
+        CGContextSetFillColorWithColor(UIGraphicsGetCurrentContext()!, secondColor.CGColor)
+        CGContextFillRect(UIGraphicsGetCurrentContext()!, CGRect(x: 0, y: 0, width: 1, height: 1))
         let secondColorImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        self.setBackgroundImage(secondColorImage, forState: .Selected)
+        self.setBackgroundImage(secondColorImage, forState: .Normal)
+        
+        UIGraphicsBeginImageContext(CGSize(width: 1, height: 1))
+        CGContextSetFillColorWithColor(UIGraphicsGetCurrentContext()!, mainColor.CGColor)
+        CGContextFillRect(UIGraphicsGetCurrentContext()!, CGRect(x: 0, y: 0, width: 1, height: 1))
+        let mainColorImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        self.setBackgroundImage(mainColorImage, forState: .Selected)
     }
     
     func setTextColors(mainColor: UIColor, secondColor: UIColor){
-        setTitleColor(mainColor, forState: .Normal)
-        setTitleColor(secondColor, forState: .Selected)
+        setTitleColor(secondColor, forState: .Normal)
+        setTitleColor(mainColor, forState: .Selected)
     }
     
     override func pointInside(point: CGPoint, withEvent event: UIEvent?) -> Bool {

@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "HTagView"
-  s.version          = "1.1.3"
+  s.version          = "2.0.0"
   s.summary          = "A customized tag view sublassing UIView"
 
 # This description is used to generate tags and improve search results.
@@ -20,18 +20,14 @@ Pod::Spec.new do |s|
   s.description      = "A customized tag view sublassing UIView where tag could be either with cancel button or multiseletable."
 
   s.homepage         = "https://github.com/popodidi/HTagView"
-  # s.screenshots     = "www.example.com/screenshots_1", "www.example.com/screenshots_2"
   s.license          = 'MIT'
   s.author           = { "Hao" => "changhao@haostudio.cc" }
   s.source           = { :git => "https://github.com/popodidi/HTagView.git", :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '8.0'
 
   s.source_files = 'HTagView/Classes/**/*'
-  
   s.resources = ['HTagView/Assets/*.{xcassets,png,jpeg,jpg,storyboard,xib}']
 
-  # s.public_header_files = 'Pod/Classes/**/*.h'
   s.frameworks = 'UIKit'
 end
