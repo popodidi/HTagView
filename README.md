@@ -81,7 +81,7 @@ class ViewController: UIViewController, HTagViewDataSource{
     }
 
     func tagView(tagView: HTagView, tagTypeAtIndex index: Int) -> HTagType {
-        return .Select
+        return .select
     }
 }
 ```

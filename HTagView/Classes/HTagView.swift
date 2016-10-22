@@ -29,7 +29,7 @@ public protocol HTagViewDataSource {
 }
 
 /**
- HTag comes with two types, `.Cancel` and `.Select`.
+ HTag comes with two types, `.cancel` and `.select`.
  */
 public enum HTagType{
     case cancel, select
@@ -37,7 +37,7 @@ public enum HTagType{
 
 
 /**
- HTagView comes with two types, `.Cancel` and `.Select`.
+ HTagView comes with two types, `.cancel` and `.select`.
  */
 //public enum HTagViewType{
 //    case Cancel, Select
@@ -87,24 +87,24 @@ open class HTagView: UIView, HTagDelegate {
     
     // MARK: - HTag Configuration
     /**
-     - `.Cancel` type: background color for all tags.
-     - `.Select` type: background color for the selected tags.
+     - `.cancel` type: background color for all tags.
+     - `.select` type: background color for the selected tags.
      */
     @IBInspectable
     open var tagMainBackColor : UIColor = UIColor(colorLiteralRed: 100/255, green: 200/255, blue: 205/255, alpha: 1)
     /**
-     - `.Cancel` type: text color for all tags.
-     - `.Select` type: text color for the selected tags.
+     - `.cancel` type: text color for all tags.
+     - `.select` type: text color for the selected tags.
      */
     @IBInspectable
     open var tagMainTextColor : UIColor = UIColor.white
     /**
-     - `.Select` type: background color for the unselected tags.
+     - `.select` type: background color for the unselected tags.
      */
     @IBInspectable
     open var tagSecondBackColor : UIColor = UIColor.lightGray
     /**
-     - `.Select` type: text color for the unselected tags.
+     - `.select` type: text color for the unselected tags.
      */
     @IBInspectable
     open var tagSecondTextColor : UIColor = UIColor.darkText
@@ -146,7 +146,7 @@ open class HTagView: UIView, HTagDelegate {
         }
     }
     /**
-     The content EdgeInsets of HTags, which would automatically adjust the position in `.Cancel` type.
+     The content EdgeInsets of HTags, which would automatically adjust the position in `.cancel` type.
      On the other word, usages are the same in both types.
      */
     @IBInspectable
@@ -277,7 +277,7 @@ open class HTagView: UIView, HTagDelegate {
     
     // MARK: - Manipulate Tags
     /**
-     Select on tag with titles in `.Select` type HTagView. The delegate method `tagView(_:tagSelectionDidChange:)` will be called.
+     Select on tag with titles in `.select` type HTagView. The delegate method `tagView(_:tagSelectionDidChange:)` will be called.
      */
     open func selectTagAtIndex(_ index: Int){
         for (i, tag) in tags.enumerated() {
@@ -293,7 +293,7 @@ open class HTagView: UIView, HTagDelegate {
         }
     }
     /**
-     Deselect on tag with titles in `.Select` type HTagView. The delegate method `tagView(_:tagSelectionDidChange:)` will be called.
+     Deselect on tag with titles in `.select` type HTagView. The delegate method `tagView(_:tagSelectionDidChange:)` will be called.
      */
     open func deselectTagAtIndex(_ index: Int){
         guard let type = dataSource?.tagView(self, tagTypeAtIndex: index) , type == .select else {
