@@ -13,9 +13,7 @@ import UIKit
  */
 @objc
 public protocol HTagViewDelegate {
-//    optional func tagView(tagView: HTagView, didCancelTag tagTitle: String)
     @objc optional func tagView(_ tagView: HTagView, didCancelTagAtIndex index: Int)
-//    optional func tagView(tagView: HTagView, tagSelectionDidChange tagSelected: [String])
     @objc optional func tagView(_ tagView: HTagView, tagSelectionDidChange selectedIndices: [Int])
 }
 
@@ -37,13 +35,8 @@ public enum HTagType{
 
 
 /**
- HTagView comes with two types, `.cancel` and `.select`.
+ HTagView is customized tag view sublassing UIView where tag could be either with cancel button or seletable.
  */
-//public enum HTagViewType{
-//    case Cancel, Select
-//}
-
-
 @IBDesignable
 open class HTagView: UIView, HTagDelegate {
     
@@ -87,24 +80,22 @@ open class HTagView: UIView, HTagDelegate {
     
     // MARK: - HTag Configuration
     /**
-     - `.cancel` type: background color for all tags.
-     - `.select` type: background color for the selected tags.
+     Main background color of tags
      */
     @IBInspectable
     open var tagMainBackColor : UIColor = UIColor(colorLiteralRed: 100/255, green: 200/255, blue: 205/255, alpha: 1)
     /**
-     - `.cancel` type: text color for all tags.
-     - `.select` type: text color for the selected tags.
+     Main text color of tags
      */
     @IBInspectable
     open var tagMainTextColor : UIColor = UIColor.white
     /**
-     - `.select` type: background color for the unselected tags.
+     Secondary background color of tags
      */
     @IBInspectable
     open var tagSecondBackColor : UIColor = UIColor.lightGray
     /**
-     - `.select` type: text color for the unselected tags.
+     Secondary text color of tags
      */
     @IBInspectable
     open var tagSecondTextColor : UIColor = UIColor.darkText
