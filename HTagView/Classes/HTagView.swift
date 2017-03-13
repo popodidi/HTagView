@@ -12,7 +12,10 @@ import UIKit
  HTagViewDelegate is a protocol to implement for responding to user interactions to the HTagView.
  */
 @objc
-public protocol HTagViewDelegate {
+public protocol HTagViewDelegate: class {
+    /**
+     Called when user did cancel tag at index
+     */
     @objc optional func tagView(_ tagView: HTagView, didCancelTagAtIndex index: Int)
     @objc optional func tagView(_ tagView: HTagView, tagSelectionDidChange selectedIndices: [Int])
 }
@@ -20,11 +23,14 @@ public protocol HTagViewDelegate {
 /**
  HTagViewDataSource is a protocol to implement for data source of the HTagView.
  */
-public protocol HTagViewDataSource {
+public protocol HTagViewDataSource: class {
     func numberOfTags(_ tagView: HTagView) -> Int
     func tagView(_ tagView: HTagView, titleOfTagAtIndex index: Int) -> String
     func tagView(_ tagView: HTagView, tagTypeAtIndex index: Int) -> HTagType
+    func tagView(_ tagView: HTagView, tagWidthAtIndex index: Int) -> CGFloat
 }
+
+public let HTagAutoWidth: CGFloat = 1.3465473892318276435675432
 
 /**
  HTag comes with two types, `.cancel` and `.select`.
@@ -32,7 +38,6 @@ public protocol HTagViewDataSource {
 public enum HTagType{
     case cancel, select
 }
-
 
 /**
  HTagView is customized tag view sublassing UIView where tag could be either with cancel button or seletable.
@@ -44,7 +49,7 @@ open class HTagView: UIView, HTagDelegate {
     /**
      HTagViewDataSource
      */
-    open var dataSource : HTagViewDataSource?{
+    open weak var dataSource : HTagViewDataSource?{
         didSet{
             reloadData()
         }
@@ -54,7 +59,7 @@ open class HTagView: UIView, HTagDelegate {
     /**
      HTagViewDelegate
      */
-    open var delegate : HTagViewDelegate?
+    open weak var delegate : HTagViewDelegate?
     
     // MARK: - HTagView Configuration
     /**
@@ -246,6 +251,10 @@ open class HTagView: UIView, HTagDelegate {
             var x = marg
             var y = marg
             for index in 0..<tags.count{
+                if dataSource.tagView(self, tagWidthAtIndex: index) != HTagAutoWidth{
+                    tags[index].frame.size.width = dataSource.tagView(self, tagWidthAtIndex: index)
+                    
+                }
                 if tags[index].frame.width + x > frame.width - marg{
                     y += tags[index].frame.height + btwLines
                     x = marg

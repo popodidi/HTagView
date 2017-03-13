@@ -55,7 +55,7 @@ class ViewController: UIViewController, HTagViewDelegate, HTagViewDataSource {
     
     // MARK: - Data
     let tagView1_data = ["Hey!","This","is","a","HTagView."]
-    var tagView2_data = ["Hey!","This","is","a","HTagView", "as", "well."]
+    var tagView2_data = ["Hey!","This","is","a","HTagView", "as", "well.", "WEOPIkl,.cviwoipaeai;kdxioaw389WOIERJAAW;EOIFJAOIEJWFAWEIOFPJIPOJ"]
     
     // MARK: - HTagViewDataSource
     func numberOfTags(_ tagView: HTagView) -> Int {
@@ -89,6 +89,10 @@ class ViewController: UIViewController, HTagViewDelegate, HTagViewDataSource {
         default:
             return .select
         }
+    }
+    
+    func tagView(_ tagView: HTagView, tagWidthAtIndex index: Int) -> CGFloat {
+        return HTagAutoWidth//30
     }
     
     // MARK: - HTagViewDelegate

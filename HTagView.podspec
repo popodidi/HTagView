@@ -24,7 +24,7 @@ Pod::Spec.new do |s|
   s.author           = { "Hao" => "changhao@haostudio.cc" }
   s.source           = { :git => "https://github.com/popodidi/HTagView.git", :tag => s.version.to_s }
 
-  s.ios.deployment_target = '8.0'
+  s.ios.deployment_target = '9.0'
 
   s.source_files = 'HTagView/Classes/**/*'
   s.resources = ['HTagView/Assets/*.{xcassets,png,jpeg,jpg,storyboard,xib}']

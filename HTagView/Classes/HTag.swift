@@ -15,7 +15,7 @@ protocol HTagDelegate: class {
 
 class HTag: UIButton {
     
-    var delegate: HTagDelegate?
+    weak var delegate: HTagDelegate?
     
     var tagString : String = ""{
         didSet{
