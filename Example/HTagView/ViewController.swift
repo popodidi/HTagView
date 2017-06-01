@@ -22,7 +22,8 @@ class ViewController: UIViewController, HTagViewDelegate, HTagViewDataSource {
         tagView1.marg = 20
         tagView1.btwTags = 20
         tagView1.btwLines = 20
-        tagView1.fontSize = 15
+//        tagView1.fontSize = 15
+        tagView1.tagFont = UIFont.systemFont(ofSize: 15)
         tagView1.tagMainBackColor = UIColor(red: 121/255, green: 196/255, blue: 1, alpha: 1)
         tagView1.tagMainTextColor = UIColor.white
         tagView1.tagSecondBackColor = UIColor.lightGray
@@ -35,7 +36,8 @@ class ViewController: UIViewController, HTagViewDelegate, HTagViewDataSource {
         tagView2.marg = 20
         tagView2.btwTags = 20
         tagView2.btwLines = 20
-        tagView2.fontSize = 15
+//        tagView2.fontSize = 15
+        tagView2.tagFont = UIFont.systemFont(ofSize: 15)
         tagView2.tagMainBackColor = UIColor(red: 1, green: 130/255, blue: 103/255, alpha: 1)
         tagView2.tagSecondBackColor = UIColor.lightGray
         tagView2.tagSecondTextColor = UIColor.darkText
