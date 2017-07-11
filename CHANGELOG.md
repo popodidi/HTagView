@@ -1,5 +1,9 @@
 # Change Log
 
+### 3.0.1
+- add default `.HTagAutoWidth` as default implementation
+- silent tapped and cancelled log
+
 ### 3.0
 - rebuild `HTag` class
 - add tag width configuration

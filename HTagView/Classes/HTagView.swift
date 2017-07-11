@@ -28,7 +28,12 @@ public protocol HTagViewDataSource: class {
     func tagView(_ tagView: HTagView, titleOfTagAtIndex index: Int) -> String
     func tagView(_ tagView: HTagView, tagTypeAtIndex index: Int) -> HTagType
     func tagView(_ tagView: HTagView, tagWidthAtIndex index: Int) -> CGFloat
-//    func tagView(_ tagView: HTagView, maximumTagWidthAtIndex index: Int) -> CGFloat
+}
+
+public extension HTagViewDataSource {
+    func tagView(_ tagView: HTagView, tagWidthAtIndex index: Int) -> CGFloat {
+        return .HTagAutoWidth
+    }
 }
 
 /**

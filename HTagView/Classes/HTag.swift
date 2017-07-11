@@ -216,11 +216,9 @@ public class HTag: UIView {
     
     // MARK: - User interaction
     func tapped(){
-        print("tapped")
         delegate?.tagClicked(self)
     }
     func cancelled() {
-        print("cancelled")
         delegate?.tagCancelled(self)
     }
 }
