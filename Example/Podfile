@@ -6,8 +6,8 @@ target 'HTagView_Example' do
   target 'HTagView_Tests' do
     inherit! :search_paths
 
-    pod 'Quick', '~> 0.10'
-  pod 'Nimble', '~> 5.0'
+#    pod 'Quick', '~> 0.10'
+#  pod 'Nimble', '~> 5.0'
 #  pod 'FBSnapshotTestCase'
 #  pod 'Nimble-Snapshots'
   end
