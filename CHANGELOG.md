@@ -1,5 +1,11 @@
 # Change Log
 
+### 3.0
+- rebuild `HTag` class
+- add tag width configuration
+	- auto / specified width
+	- auto / specified maximum width
+
 ### 2.1.x
 - Swift 3.0
 
