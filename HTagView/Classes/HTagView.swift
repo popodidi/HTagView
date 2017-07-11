@@ -12,20 +12,23 @@ import UIKit
  HTagViewDelegate is a protocol to implement for responding to user interactions to the HTagView.
  */
 @objc
-public protocol HTagViewDelegate {
-//    optional func tagView(tagView: HTagView, didCancelTag tagTitle: String)
+public protocol HTagViewDelegate: class {
+    /**
+     Called when user did cancel tag at index
+     */
     @objc optional func tagView(_ tagView: HTagView, didCancelTagAtIndex index: Int)
-//    optional func tagView(tagView: HTagView, tagSelectionDidChange tagSelected: [String])
     @objc optional func tagView(_ tagView: HTagView, tagSelectionDidChange selectedIndices: [Int])
 }
 
 /**
  HTagViewDataSource is a protocol to implement for data source of the HTagView.
  */
-public protocol HTagViewDataSource {
+public protocol HTagViewDataSource: class {
     func numberOfTags(_ tagView: HTagView) -> Int
     func tagView(_ tagView: HTagView, titleOfTagAtIndex index: Int) -> String
     func tagView(_ tagView: HTagView, tagTypeAtIndex index: Int) -> HTagType
+    func tagView(_ tagView: HTagView, tagWidthAtIndex index: Int) -> CGFloat
+//    func tagView(_ tagView: HTagView, maximumTagWidthAtIndex index: Int) -> CGFloat
 }
 
 /**
@@ -35,23 +38,17 @@ public enum HTagType{
     case cancel, select
 }
 
-
 /**
- HTagView comes with two types, `.cancel` and `.select`.
+ HTagView is customized tag view sublassing UIView where tag could be either with cancel button or seletable.
  */
-//public enum HTagViewType{
-//    case Cancel, Select
-//}
-
-
 @IBDesignable
-open class HTagView: UIView, HTagDelegate {
+open class HTagView: UIView {
     
     // MARK: - DataSource
     /**
      HTagViewDataSource
      */
-    open var dataSource : HTagViewDataSource?{
+    open weak var dataSource : HTagViewDataSource?{
         didSet{
             reloadData()
         }
@@ -61,7 +58,7 @@ open class HTagView: UIView, HTagDelegate {
     /**
      HTagViewDelegate
      */
-    open var delegate : HTagViewDelegate?
+    open weak var delegate : HTagViewDelegate?
     
     // MARK: - HTagView Configuration
     /**
@@ -87,33 +84,58 @@ open class HTagView: UIView, HTagDelegate {
     
     // MARK: - HTag Configuration
     /**
-     - `.cancel` type: background color for all tags.
-     - `.select` type: background color for the selected tags.
+     Main background color of tags
      */
     @IBInspectable
-    open var tagMainBackColor : UIColor = UIColor(colorLiteralRed: 100/255, green: 200/255, blue: 205/255, alpha: 1)
+    open var tagMainBackColor : UIColor = UIColor(colorLiteralRed: 100/255, green: 200/255, blue: 205/255, alpha: 1) {
+        didSet {
+            tags.forEach {
+                $0.tagMainBackColor = tagMainBackColor
+            }
+        }
+    }
     /**
-     - `.cancel` type: text color for all tags.
-     - `.select` type: text color for the selected tags.
+     Main text color of tags
      */
     @IBInspectable
-    open var tagMainTextColor : UIColor = UIColor.white
+    open var tagMainTextColor : UIColor = UIColor.white {
+        didSet {
+            tags.forEach {
+                $0.tagMainTextColor = tagMainTextColor
+            }
+        }
+    }
     /**
-     - `.select` type: background color for the unselected tags.
+     Secondary background color of tags
      */
     @IBInspectable
-    open var tagSecondBackColor : UIColor = UIColor.lightGray
+    open var tagSecondBackColor : UIColor = UIColor.lightGray {
+        didSet {
+            tags.forEach {
+                $0.tagSecondBackColor = tagSecondBackColor
+            }
+        }
+    }
     /**
-     - `.select` type: text color for the unselected tags.
+     Secondary text color of tags
      */
     @IBInspectable
-    open var tagSecondTextColor : UIColor = UIColor.darkText
+    open var tagSecondTextColor : UIColor = UIColor.darkText {
+        didSet {
+            tags.forEach {
+                $0.tagSecondTextColor = tagSecondTextColor
+            }
+        }
+    }
     /**
      The border width to height ratio of HTags.
      */
     @IBInspectable
     open var tagBorderWidth :CGFloat = CGFloat(0){
         didSet{
+            tags.forEach {
+                $0.tagBorderWidth = tagBorderWidth
+            }
             for tag in tags{
                 tag.layer.borderWidth = tagBorderWidth
             }
@@ -126,19 +148,35 @@ open class HTagView: UIView, HTagDelegate {
     @IBInspectable
     open var tagBorderColor :CGColor? = nil{
         didSet{
+            tags.forEach {
+                $0.tagBorderColor = tagBorderColor
+            }
             for tag in tags{
                 tag.layer.borderColor = tagBorderColor
             }
             layoutIfNeeded()
         }
     }
-    
+    /**
+     Maximum Width of Tag
+     */
+    open var tagMaximumWidth: CGFloat? = .HTagAutoMaximumWidth {
+        didSet {
+            tags.forEach {
+                $0.tagMaximumWidth = tagMaximumWidth
+            }
+            layoutIfNeeded()
+        }
+    }
     /**
      The corner radius to height ratio of HTags.
      */
     @IBInspectable
     open var tagCornerRadiusToHeightRatio :CGFloat = CGFloat(0.2){
         didSet{
+            tags.forEach {
+                $0.tagCornerRadiusToHeightRatio = tagCornerRadiusToHeightRatio
+            }
             for tag in tags{
                 tag.layer.cornerRadius = tag.frame.height * tagCornerRadiusToHeightRatio
             }
@@ -150,21 +188,32 @@ open class HTagView: UIView, HTagDelegate {
      On the other word, usages are the same in both types.
      */
     @IBInspectable
-    open var tagContentEdgeInsets: UIEdgeInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8){
+    open var tagContentEdgeInsets: UIEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8) {
         didSet{
             for tag in tags{
-                tag.contentInsets = tagContentEdgeInsets
+                tag.tagContentEdgeInsets = tagContentEdgeInsets
             }
         }
     }
     /**
-     The Font size of HTags.
+     The distance between cancel icon and text
      */
     @IBInspectable
-    open var fontSize : CGFloat = 14{
+    open var tagCancelIconRightMargin: CGFloat = 4 {
         didSet{
             for tag in tags{
-                tag.tagFontSize = fontSize
+                tag.tagCancelIconRightMargin = tagCancelIconRightMargin
+            }
+        }
+    }
+    /**
+     The Font of HTags.
+     */
+    @IBInspectable
+    open var tagFont : UIFont = UIFont.systemFont(ofSize: 17) {
+        didSet{
+            for tag in tags {
+                tag.tagFont = tagFont
             }
             layoutIfNeeded()
             invalidateIntrinsicContentSize()
@@ -177,7 +226,7 @@ open class HTagView: UIView, HTagDelegate {
         get{
             var selectedIndexes = [Int]()
             for (index, tag) in tags.enumerated(){
-                if !tag.withCancelButton && tag.isSelected{
+                if tag.tagType == .select && tag.isSelected{
                     selectedIndexes.append(index)
                 }
             }
@@ -185,7 +234,7 @@ open class HTagView: UIView, HTagDelegate {
         }
     }
     
-    var tags : [HTag] = []
+    var tags: [HTag] = []
     
     // MARK: - init
     override public init(frame: CGRect){
@@ -215,26 +264,25 @@ open class HTagView: UIView, HTagDelegate {
             tag.removeFromSuperview()
         }
         tags = []
-        
         for index in  0 ..< dataSource.numberOfTags(self) {
             let tag = HTag()
             tag.delegate = self
-            switch dataSource.tagView(self, tagTypeAtIndex: index) {
-            case .cancel:
-                tag.withCancelButton = true
-                tag.isSelected = true
-            case .select:
-                tag.withCancelButton = false
-                tag.isSelected = preserveSelectionState ? selection.contains(index) : false
+            tag.tagType = dataSource.tagView(self, tagTypeAtIndex: index)
+            if tag.tagType == .select {
+                tag.setSelected(preserveSelectionState ? selection.contains(index) : false)
             }
-            tag.contentInsets = tagContentEdgeInsets
-            tag.titleLabel?.font = tag.titleLabel?.font.withSize(fontSize)
-            tag.setBackColors(tagMainBackColor, secondColor: tagSecondBackColor)
-            tag.setTextColors(tagMainTextColor, secondColor: tagSecondTextColor)
-            tag.layer.cornerRadius = tag.frame.height * tagCornerRadiusToHeightRatio
-            tag.layer.borderColor = tagBorderColor
-            tag.layer.borderWidth = tagBorderWidth
-            tag.tagString = dataSource.tagView(self, titleOfTagAtIndex: index)
+            tag.tagContentEdgeInsets = tagContentEdgeInsets
+            tag.tagFont = tagFont
+            tag.tagMainBackColor = tagMainBackColor
+            tag.tagSecondBackColor = tagSecondBackColor
+            tag.tagMainTextColor = tagMainTextColor
+            tag.tagSecondTextColor = tagSecondTextColor
+            tag.tagBorderColor = tagBorderColor
+            tag.tagBorderWidth = tagBorderWidth
+            tag.tagCornerRadiusToHeightRatio = tagCornerRadiusToHeightRatio
+            tag.tagCancelIconRightMargin = tagCancelIconRightMargin
+            tag.tagMaximumWidth = tagMaximumWidth
+            tag.tagTitle = dataSource.tagView(self, titleOfTagAtIndex: index)
             addSubview(tag)
             tags.append(tag)
         }
@@ -249,16 +297,25 @@ open class HTagView: UIView, HTagDelegate {
             return
         }
         
-        if dataSource.numberOfTags(self) == 0{
+        if dataSource.numberOfTags(self) == 0 {
             self.frame.size = CGSize(width: self.frame.width, height: 0)
         }else{
             var x = marg
             var y = marg
             for index in 0..<tags.count{
+                if dataSource.tagView(self, tagWidthAtIndex: index) != .HTagAutoWidth {
+                    tags[index].tagSpecifiedWidth = dataSource.tagView(self, tagWidthAtIndex: index)
+                } else {
+                    tags[index].tagSpecifiedWidth = nil
+                }
+                if tagMaximumWidth == .HTagAutoMaximumWidth {
+                    tags[index].tagMaximumWidth = frame.width - 2 * marg
+                }
                 if tags[index].frame.width + x > frame.width - marg{
                     y += tags[index].frame.height + btwLines
                     x = marg
                 }
+                
                 tags[index].frame.origin = CGPoint(x: x, y: y)
                 x += tags[index].frame.width + btwTags
             }
@@ -281,14 +338,14 @@ open class HTagView: UIView, HTagDelegate {
      */
     open func selectTagAtIndex(_ index: Int){
         for (i, tag) in tags.enumerated() {
-            guard let type = dataSource?.tagView(self, tagTypeAtIndex: i) , type == .select else {
+            guard let type = dataSource?.tagView(self, tagTypeAtIndex: i), type == .select else {
                 continue
             }
             
-            if i != index && !multiselect{
-                tag.isSelected = false
-            }else if i == index{
-                tag.isSelected = true
+            if i == index {
+                tag.setSelected(true)
+            } else if !multiselect {
+                tag.setSelected(false)
             }
         }
     }
@@ -299,19 +356,13 @@ open class HTagView: UIView, HTagDelegate {
         guard let type = dataSource?.tagView(self, tagTypeAtIndex: index) , type == .select else {
             return
         }
-        
-        tags[index].isSelected = false
+        tags[index].setSelected(false)
     }
     
-    // MARK: - Tag Delegate
-    func tagCancelled(_ sender: HTag) {
-        guard let index = tags.index(of: sender) else{
-            return
-        }
-        
-        delegate?.tagView?(self, didCancelTagAtIndex: index)
-    }
-    func tagClicked(_ sender: HTag){
+}
+
+extension HTagView: HTagDelegate {
+    func tagClicked(_ sender: HTag) {
         guard let index = tags.index(of: sender) else{
             return
         }
@@ -322,10 +373,12 @@ open class HTagView: UIView, HTagDelegate {
                 selectTagAtIndex(index)
             }
         }
-        
         delegate?.tagView?(self, tagSelectionDidChange: selectedIndices)
     }
-    
-    
+    func tagCancelled(_ sender: HTag) {
+        guard let index = tags.index(of: sender) else{
+            return
+        }
+        delegate?.tagView?(self, didCancelTagAtIndex: index)
+    }
 }
-

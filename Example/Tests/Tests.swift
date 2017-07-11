@@ -1,5 +1,5 @@
 // https://github.com/Quick/Quick
-
+/*
 import Quick
 import Nimble
 import HTagView
@@ -47,4 +47,4 @@ class TableOfContentsSpec: QuickSpec {
             }
         }
     }
-}
+}*/

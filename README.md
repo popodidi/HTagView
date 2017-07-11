@@ -9,11 +9,13 @@ HTagView is a customized tag view sublassing UIView where tag could be either wi
 
 ### Features
 
-- `.Cancel` and `.Select` tag types available (see below)
-- Single / Multi selection for `.Select` tags
+- `.cancel` and `.select` tag types available (see below)
+- Single / Multi selection for `.select` tags
 - `HTagViewDataSource` and `HTagViewDelegte` protocols
 - Customized configuration
-- Supporting `!IBDesignable` and autolayout
+- Supporting `@IBDesignable` and autolayout
+- Specific/Auto tag width
+- Specific/Auto Maximum tag width
 
 ### Demo
 ![](demo.gif)
@@ -25,7 +27,6 @@ HTagView is a customized tag view sublassing UIView where tag could be either wi
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
 
-<!--## Requirements-->
 
 ## Installation
 
@@ -35,6 +36,8 @@ it, simply add the following line to your Podfile:
 ```ruby
 pod "HTagView"
 ```
+
+### Requirements
 
 Swift Version | HTagView Version
 ----- | -----
@@ -54,17 +57,18 @@ override func viewDidLoad(){
 
 	// configure tagView
 	tagView.delegate = self
-    tagView.dataSource = self
-    tagView.marg = 20
-    tagView.btwTags = 20
-    tagView.btwLines = 20
-    tagView.fontSize = 15
-    tagView.tagMainBackColor = UIColor(red: 1, green: 130/255, blue: 103/255, alpha: 1)
-    tagView.tagSecondBackColor = UIColor.lightGrayColor()
-    tagView.tagSecondTextColor = UIColor.darkTextColor()
-    tagView.tagContentEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
-    tagView.tagBorderColor = UIColor.blackColor().CGColor
-    tagView.tagBorderWidth = 2
+	tagView.dataSource = self
+	tagView.marg = 20
+	tagView.btwTags = 20
+	tagView.btwLines = 20
+	tagView.tagFont = UIFont.systemFont(ofSize: 15)
+	tagView.tagMainBackColor = UIColor(red: 1, green: 130/255, blue: 103/255, alpha: 1)
+	tagView.tagSecondBackColor = UIColor.lightGray
+	tagView.tagSecondTextColor = UIColor.darkText
+	tagView.tagContentEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
+	tagView.tagMaximumWidth = .HTagAutoMaximumWidth
+	tagView.tagBorderColor = UIColor.black.cgColor
+	tagView.tagBorderWidth = 2
 }
 ```
 ### Data Source
@@ -77,16 +81,24 @@ class ViewController: UIViewController, HTagViewDataSource{
     // MARK: - Data
     let data = ["Hey!","This","is","a","HTagView."]
 
+    
     // MARK: - HTagViewDataSource
-    func numberOfTags(tagView: HTagView) -> Int {
+    func numberOfTags(_ tagView: HTagView) -> Int {
     	return data.count
     }
-    func tagView(tagView: HTagView, titleOfTagAtIndex index: Int) -> String {
+    
+    func tagView(_ tagView: HTagView, titleOfTagAtIndex index: Int) -> String {
         return data[index]
     }
-
-    func tagView(tagView: HTagView, tagTypeAtIndex index: Int) -> HTagType {
-        return .select
+    
+    func tagView(_ tagView: HTagView, tagTypeAtIndex index: Int) -> HTagType {
+		return .select
+		// return .cancel
+    }
+    
+    func tagView(_ tagView: HTagView, tagWidthAtIndex index: Int) -> CGFloat {
+        return .HTagAutoWidth
+        // return 150
     }
 }
 ```
@@ -97,13 +109,13 @@ class ViewController: UIViewController, HTagViewDelegate, HTagViewDataSource {
 	// .
 	// .
 
-	// MARK: - HTagViewDelegate
-    func tagView(tagView: HTagView, tagSelectionDidChange selectedIndices: [Int]) {
+    // MARK: - HTagViewDelegate
+    func tagView(_ tagView: HTagView, tagSelectionDidChange selectedIndices: [Int]) {
         print("tag with indices \(selectedIndices) are selected")
     }
-    func tagView(tagView: HTagView, didCancelTagAtIndex index: Int) {
+    func tagView(_ tagView: HTagView, didCancelTagAtIndex index: Int) {
         print("tag with index: '\(index)' has to be removed from tagView")
-		data.removeAtIndex(index)
+        data.remove(at: index)
         tagView.reloadData()
     }
 }

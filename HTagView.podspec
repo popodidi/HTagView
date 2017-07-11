@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "HTagView"
-  s.version          = "2.1.1"
+  s.version          = "3.0"
   s.summary          = "A customized tag view sublassing UIView"
 
 # This description is used to generate tags and improve search results.
@@ -17,14 +17,14 @@ Pod::Spec.new do |s|
 #   * Write the description between the DESC delimiters below.
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
-  s.description      = "A customized tag view sublassing UIView where tag could be either with cancel button or multiseletable."
+  s.description      = "A customized tag view sublassing UIView where tag could be either with cancel button or seletable."
 
   s.homepage         = "https://github.com/popodidi/HTagView"
   s.license          = 'MIT'
   s.author           = { "Hao" => "changhao@haostudio.cc" }
   s.source           = { :git => "https://github.com/popodidi/HTagView.git", :tag => s.version.to_s }
 
-  s.ios.deployment_target = '8.0'
+  s.ios.deployment_target = '9.0'
 
   s.source_files = 'HTagView/Classes/**/*'
   s.resources = ['HTagView/Assets/*.{xcassets,png,jpeg,jpg,storyboard,xib}']
