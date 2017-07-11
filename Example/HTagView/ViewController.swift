@@ -47,7 +47,6 @@ class ViewController: UIViewController, HTagViewDelegate, HTagViewDataSource {
         tagView2.selectTagAtIndex(6)
         tagView1.selectTagAtIndex(3)
         
-        
         tagView1.reloadData()
         tagView2.reloadData()
         
