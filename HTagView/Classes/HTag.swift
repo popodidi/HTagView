@@ -2,10 +2,10 @@
 //  HTag.swift
 //  Pods
 //
-//  Created by Chang, Hao on 5/16/16.
+//  Created by Chang, Hao on 12/12/2016.
 //
 //
-/*
+
 import UIKit
 
 protocol HTagDelegate: class {
@@ -13,145 +13,242 @@ protocol HTagDelegate: class {
     func tagCancelled(_ sender: HTag)
 }
 
-class HTag: UIButton {
-    
+public class HTag: UIView {
     weak var delegate: HTagDelegate?
     
-    var tagString : String = ""{
-        didSet{
-            self.setTitle(tagString, for: UIControlState())
-            layoutSubviews()
-        }
-    }
-    var tagFontSize : CGFloat = 17{
-        didSet{
-            titleLabel?.font = titleLabel?.font.withSize(tagFontSize)
-            layoutSubviews()
-        }
-    }
-    let cancelButton = UIButton(type: .custom)
-    var cancelButtonHeight : CGFloat{
-        get{
-            return bounds.height/4
-        }
-    }
+    // MARK: - HTag Configuration
+    /**
+     Type of tag
+     */
+    var tagType: HTagType = .cancel { didSet { updateAll() } }
+    /**
+     Title of tag
+     */
+    var tagTitle: String = "" { didSet { updateAll() } }
+    /**
+     Main background color of tags
+     */
+    var tagMainBackColor : UIColor = UIColor.white { didSet { updateTitlesColorsAndFontsDueToSelection() } }
+    /**
+     Main text color of tags
+     */
+    var tagMainTextColor : UIColor = UIColor.black { didSet { updateTitlesColorsAndFontsDueToSelection() } }
+    /**
+     Secondary background color of tags
+     */
+    var tagSecondBackColor : UIColor = UIColor.gray { didSet { updateTitlesColorsAndFontsDueToSelection() } }
+    /**
+     Secondary text color of tags
+     */
+    var tagSecondTextColor : UIColor = UIColor.white { didSet { updateTitlesColorsAndFontsDueToSelection() } }
+    /**
+     The border width to height ratio of HTags.
+     */
+    var tagBorderWidth :CGFloat = 1 { didSet { updateBorder() } }
+    /**
+     The border color to height ratio of HTags.
+     */
+    var tagBorderColor :CGColor? = UIColor.darkGray.cgColor { didSet { updateBorder() } }
     
-    var btwCancelButtonAndText = CGFloat(10)
-    var withCancelButton : Bool = false{
-        didSet{
-            if withCancelButton{
-                contentInsets = UIEdgeInsets(top: contentInsets.top, left: contentInsets.left, bottom: contentInsets.bottom, right: contentInsets.right)
-                addSubview(cancelButton)
-            }else{
-                contentEdgeInsets = calculatedContentEdgeInsets(contentInsets.top, left: contentInsets.left, bottom: contentInsets.bottom, right: contentInsets.right)
-                self.setImage(nil, for: UIControlState())
-                cancelButton.removeFromSuperview()
-            }
-            layoutSubviews()
-        }
-    }
-    var contentInsets : UIEdgeInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8){
-        didSet{
-            contentEdgeInsets = calculatedContentEdgeInsets(contentInsets.top, left: contentInsets.left, bottom: contentInsets.bottom, right: contentInsets.right)
-            layoutSubviews()
-        }
-    }
+    /**
+     The corner radius to height ratio of HTags.
+     */
+    var tagCornerRadiusToHeightRatio: CGFloat = 0.2 { didSet { updateBorder() } }
+    /**
+     The content EdgeInsets of HTags, which would automatically adjust the position in `.cancel` type.
+     On the other word, usages are the same in both types.
+     */
+    var tagContentEdgeInsets: UIEdgeInsets = UIEdgeInsets() { didSet { updateAll()} }
+    /**
+     The distance between cancel icon and text
+     */
+    var tagCancelIconRightMargin: CGFloat = 4 { didSet { updateAll()} }
+    /**
+     The Font of HTags.
+     */
+    var tagFont: UIFont = UIFont.systemFont(ofSize: 17) { didSet { updateAll() } }
+    
+    /**
+     Specified Width of Tag
+     */
+    var tagSpecifiedWidth: CGFloat? = nil { didSet { layoutSubviews() } }
+    /**
+     Maximum Width of Tag
+     */
+    var tagMaximumWidth: CGFloat? = nil { didSet { layoutSubviews() } }
+    // MARK: - status
+    private(set) var isSelected: Bool = false
     
     
-    
-    func tagClicked(){
-        if withCancelButton{
-            delegate?.tagCancelled(self)
-        }else{
-            delegate?.tagClicked(self)
-        }
-    }
-    
-    
-    
-    fileprivate func calculatedContentEdgeInsets(_ top: CGFloat, left: CGFloat, bottom: CGFloat, right: CGFloat) -> UIEdgeInsets{
-        if withCancelButton{
-           return UIEdgeInsets(top: top, left: left + cancelButtonHeight + btwCancelButtonAndText, bottom: bottom, right: right)
-        }else{
-            return UIEdgeInsets(top: top, left: left, bottom: bottom, right: right)
-        }
-    }
+    // MARK: - Subviews
+    var button: UIButton = UIButton(type: .system)
+    var cancelButton: UIButton = UIButton(type: .system)
     
     // MARK: - Init
-    override init(frame: CGRect) {
+    override init(frame: CGRect){
         super.init(frame: frame)
-        configureButton()
-        configureCancelButton()
+        configure()
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        configureButton()
-        configureCancelButton()
+        configure()
     }
     
-    func configureButton(){
+    deinit {
+        button.removeObserver(self, forKeyPath: "highlighted")
+    }
+    
+    // MARK: - Configure
+    func configure(){
         clipsToBounds = true
-        contentInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
-        addTarget(self, action: #selector(HTag.tagClicked), for: .touchUpInside)
+        self.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapped)))
+        setupButton()
+        setupCancelButton()
+        updateAll()
     }
     
-    // MARK: - layout
-    override func layoutSubviews() {
-        sizeToFit()
-        configureCancelButton()
-        super.layoutSubviews()
+    // MARK: - button
+    func setupButton() {
+        addSubview(button)
+        button.addTarget(self, action: #selector(tapped), for: .touchUpInside)
+        button.addObserver(self, forKeyPath: "highlighted", options: .new, context: nil)
     }
     
-    func configureCancelButton(){
-        let image = UIImage(named: "close_small", in: Bundle(for: self.classForCoder), compatibleWith: nil)?.withRenderingMode(.alwaysTemplate)
-        cancelButton.setBackgroundImage(image , for: UIControlState())
-        cancelButton.tintColor = self.currentTitleColor
+    func setHighlight(_ highlighted: Bool) {
+        let color = isSelected ? tagMainBackColor : tagSecondBackColor
+        backgroundColor = highlighted ? color.darker() : color
+    }
+    func setSelected(_ selected: Bool) {
+        isSelected = selected
+        updateTitlesColorsAndFontsDueToSelection()
+    }
+    public override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         
-        cancelButton.contentVerticalAlignment = .fill;
-        cancelButton.contentHorizontalAlignment = .fill;
-        cancelButton.backgroundColor = UIColor.clear
-        
-        cancelButton.frame = CGRect(x: contentInsets.left, y: (frame.height - cancelButtonHeight)/2, width: cancelButtonHeight, height: cancelButtonHeight)
-        cancelButton.isUserInteractionEnabled = false
-        sizeToFit()
-    }
-    
-    
-    // MARK: - set color
-    func setBackColors(_ mainColor: UIColor, secondColor: UIColor){
-        
-        UIGraphicsBeginImageContext(CGSize(width: 1, height: 1))
-        UIGraphicsGetCurrentContext()!.setFillColor(secondColor.cgColor)
-        UIGraphicsGetCurrentContext()!.fill(CGRect(x: 0, y: 0, width: 1, height: 1))
-        let secondColorImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        self.setBackgroundImage(secondColorImage, for: UIControlState())
-        
-        UIGraphicsBeginImageContext(CGSize(width: 1, height: 1))
-        UIGraphicsGetCurrentContext()!.setFillColor(mainColor.cgColor)
-        UIGraphicsGetCurrentContext()!.fill(CGRect(x: 0, y: 0, width: 1, height: 1))
-        let mainColorImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        self.setBackgroundImage(mainColorImage, for: .selected)
-    }
-    
-    func setTextColors(_ mainColor: UIColor, secondColor: UIColor){
-        setTitleColor(secondColor, for: UIControlState())
-        setTitleColor(mainColor, for: .selected)
-    }
-    
-    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        if bounds.contains(point){
-            if withCancelButton{
-                if point.x < bounds.origin.x + contentEdgeInsets.left + cancelButtonHeight + btwCancelButtonAndText{
-                    return true
-                }
-            }else{
-                return true
-            }
+        guard let keyPath = keyPath else {
+            return
         }
-        return false
+        switch keyPath {
+        case "highlighted":
+            guard let highlighted = change?[.newKey] as? Bool else  {
+                break
+            }
+            setHighlight(highlighted)
+        default:
+            break
+        }
     }
     
-}*/
+    // MARK: - cancel button
+    func setupCancelButton() {
+        cancelButton.setImage(UIImage(named: "close_small", in: Bundle(for: self.classForCoder), compatibleWith: nil)?.withRenderingMode(.alwaysTemplate), for: UIControlState())
+        cancelButton.addTarget(self, action: #selector(cancelled), for: .touchUpInside)
+        addSubview(cancelButton)
+        cancelButton.isHidden = tagType == .select
+    }
+    // MARK: - Layout
+    public override func layoutSubviews() {
+        button.sizeToFit()
+        // set origin
+        if tagType == .select {
+            button.frame.origin = CGPoint(x: tagContentEdgeInsets.left, y: tagContentEdgeInsets.top)
+        } else {
+            let cancelButtonSide: CGFloat = 16
+            cancelButton.frame.size = CGSize(width: cancelButtonSide, height: cancelButtonSide)
+            cancelButton.frame.origin = CGPoint(x: tagContentEdgeInsets.left ,
+                                                y: tagContentEdgeInsets.top + button.frame.height/2 - cancelButtonSide/2)
+            button.frame.origin = CGPoint(x: tagContentEdgeInsets.left + cancelButtonSide + tagCancelIconRightMargin ,
+                                          y: tagContentEdgeInsets.top)
+        }
+        
+        // set size
+        let tagHeight =  button.frame.maxY + tagContentEdgeInsets.bottom
+        var tagWidth: CGFloat = 0
+        if let tagSpecifiedWidth = tagSpecifiedWidth {
+            tagWidth = tagSpecifiedWidth
+        } else {
+            tagWidth = button.frame.maxX + tagContentEdgeInsets.right
+        }
+        
+        var shouldSetButtonWidth: Bool = false
+        if let maxWidth = tagMaximumWidth,
+            maxWidth < tagWidth {
+            tagWidth = maxWidth
+            shouldSetButtonWidth = true
+        } else if tagSpecifiedWidth != nil {
+            shouldSetButtonWidth = true
+        }
+        frame.size = CGSize(width: tagWidth, height: tagHeight)
+        
+        if shouldSetButtonWidth {
+            button.frame.size.width = tagWidth
+                - cancelButton.frame.width - tagCancelIconRightMargin
+                - tagContentEdgeInsets.left - tagContentEdgeInsets.right
+        }
+    }
+    
+    func updateAll() {
+        cancelButton.isHidden = tagType == .select
+        updateTitlesColorsAndFontsDueToSelection()
+        updateBorder()
+        button.sizeToFit()
+        layoutIfNeeded()
+        invalidateIntrinsicContentSize()
+    }
+    
+    func updateTitlesColorsAndFontsDueToSelection() {
+        backgroundColor = isSelected ? tagMainBackColor : tagSecondBackColor
+        let textColor = isSelected ? tagMainTextColor : tagSecondTextColor
+        var attributes: [String: Any] = [:]
+        attributes[NSFontAttributeName] = tagFont
+        attributes[NSForegroundColorAttributeName] = textColor
+        button.setAttributedTitle(NSAttributedString(string: tagTitle, attributes: attributes), for: .normal)
+        if tagType == .cancel {
+            cancelButton.tintColor = textColor
+        }
+    }
+    
+    func updateBorder() {
+        layer.borderWidth = tagBorderWidth
+        layer.borderColor = tagBorderColor
+        layer.cornerRadius = bounds.height * tagCornerRadiusToHeightRatio
+    }
+    
+    // MARK: - User interaction
+    func tapped(){
+        print("tapped")
+        delegate?.tagClicked(self)
+    }
+    func cancelled() {
+        print("cancelled")
+        delegate?.tagCancelled(self)
+    }
+}
+
+
+extension UIColor {
+    
+    func lighter(by percentage: CGFloat = 30.0) -> UIColor? {
+        return self.adjust(by: abs(percentage) )
+    }
+    
+    func darker(by percentage: CGFloat = 30.0) -> UIColor? {
+        return self.adjust(by: -1 * abs(percentage) )
+    }
+    
+    func adjust(by percentage: CGFloat = 30.0) -> UIColor? {
+        var r: CGFloat = 0
+        var g: CGFloat = 0
+        var b: CGFloat = 0
+        var a: CGFloat = 0
+        
+        if(self.getRed(&r, green: &g, blue: &b, alpha: &a)){
+            return UIColor(red: min(r + percentage/100, 1.0),
+                           green: min(g + percentage/100, 1.0),
+                           blue: min(b + percentage/100, 1.0),
+                           alpha: a)
+        }else{
+            return nil
+        }
+    }
+}

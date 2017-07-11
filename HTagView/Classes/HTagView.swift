@@ -28,9 +28,8 @@ public protocol HTagViewDataSource: class {
     func tagView(_ tagView: HTagView, titleOfTagAtIndex index: Int) -> String
     func tagView(_ tagView: HTagView, tagTypeAtIndex index: Int) -> HTagType
     func tagView(_ tagView: HTagView, tagWidthAtIndex index: Int) -> CGFloat
+//    func tagView(_ tagView: HTagView, maximumTagWidthAtIndex index: Int) -> CGFloat
 }
-
-public let HTagAutoWidth: CGFloat = 1.3465473892318276435675432
 
 /**
  HTag comes with two types, `.cancel` and `.select`.
@@ -43,7 +42,7 @@ public enum HTagType{
  HTagView is customized tag view sublassing UIView where tag could be either with cancel button or seletable.
  */
 @IBDesignable
-open class HTagView: UIView{//, HTagDelegate {
+open class HTagView: UIView {
     
     // MARK: - DataSource
     /**
@@ -158,7 +157,17 @@ open class HTagView: UIView{//, HTagDelegate {
             layoutIfNeeded()
         }
     }
-    
+    /**
+     Maximum Width of Tag
+     */
+    open var tagMaximumWidth: CGFloat? = .HTagAutoMaximumWidth {
+        didSet {
+            tags.forEach {
+                $0.tagMaximumWidth = tagMaximumWidth
+            }
+            layoutIfNeeded()
+        }
+    }
     /**
      The corner radius to height ratio of HTags.
      */
@@ -179,10 +188,21 @@ open class HTagView: UIView{//, HTagDelegate {
      On the other word, usages are the same in both types.
      */
     @IBInspectable
-    open var tagContentEdgeInsets: UIEdgeInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8){
+    open var tagContentEdgeInsets: UIEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8) {
         didSet{
             for tag in tags{
                 tag.tagContentEdgeInsets = tagContentEdgeInsets
+            }
+        }
+    }
+    /**
+     The distance between cancel icon and text
+     */
+    @IBInspectable
+    open var tagCancelIconRightMargin: CGFloat = 4 {
+        didSet{
+            for tag in tags{
+                tag.tagCancelIconRightMargin = tagCancelIconRightMargin
             }
         }
     }
@@ -199,32 +219,12 @@ open class HTagView: UIView{//, HTagDelegate {
             invalidateIntrinsicContentSize()
         }
     }
-    /*
-    /**
-     The Font size of HTags.
-     */
-    @IBInspectable
-    open var fontSize : CGFloat = 14{
-        didSet{
-            for tag in tags{
-                tag.tagFontSize = fontSize
-            }
-            layoutIfNeeded()
-            invalidateIntrinsicContentSize()
-        }
-    }*/
     /**
      Indices of selected tags.
      */
     open var selectedIndices: [Int]{
         get{
             var selectedIndexes = [Int]()
-//            for (index, tag) in tags.enumerated(){
-//                if !tag.withCancelButton && tag.isSelected{
-//                    selectedIndexes.append(index)
-//                }
-//            }
-            
             for (index, tag) in tags.enumerated(){
                 if tag.tagType == .select && tag.isSelected{
                     selectedIndexes.append(index)
@@ -234,7 +234,7 @@ open class HTagView: UIView{//, HTagDelegate {
         }
     }
     
-    var tags: [Tag] = []
+    var tags: [HTag] = []
     
     // MARK: - init
     override public init(frame: CGRect){
@@ -260,13 +260,12 @@ open class HTagView: UIView{//, HTagDelegate {
         
         let selection = selectedIndices
         
-        
         for tag in tags {
             tag.removeFromSuperview()
         }
         tags = []
         for index in  0 ..< dataSource.numberOfTags(self) {
-            let tag = Tag()
+            let tag = HTag()
             tag.delegate = self
             tag.tagType = dataSource.tagView(self, tagTypeAtIndex: index)
             if tag.tagType == .select {
@@ -281,6 +280,8 @@ open class HTagView: UIView{//, HTagDelegate {
             tag.tagBorderColor = tagBorderColor
             tag.tagBorderWidth = tagBorderWidth
             tag.tagCornerRadiusToHeightRatio = tagCornerRadiusToHeightRatio
+            tag.tagCancelIconRightMargin = tagCancelIconRightMargin
+            tag.tagMaximumWidth = tagMaximumWidth
             tag.tagTitle = dataSource.tagView(self, titleOfTagAtIndex: index)
             addSubview(tag)
             tags.append(tag)
@@ -302,8 +303,13 @@ open class HTagView: UIView{//, HTagDelegate {
             var x = marg
             var y = marg
             for index in 0..<tags.count{
-                if dataSource.tagView(self, tagWidthAtIndex: index) != HTagAutoWidth {
-                    tags[index].frame.size.width = dataSource.tagView(self, tagWidthAtIndex: index)
+                if dataSource.tagView(self, tagWidthAtIndex: index) != .HTagAutoWidth {
+                    tags[index].tagSpecifiedWidth = dataSource.tagView(self, tagWidthAtIndex: index)
+                } else {
+                    tags[index].tagSpecifiedWidth = nil
+                }
+                if tagMaximumWidth == .HTagAutoMaximumWidth {
+                    tags[index].tagMaximumWidth = frame.width - 2 * marg
                 }
                 if tags[index].frame.width + x > frame.width - marg{
                     y += tags[index].frame.height + btwLines
@@ -355,8 +361,8 @@ open class HTagView: UIView{//, HTagDelegate {
     
 }
 
-extension HTagView: TagDelegate {
-    func tagClicked(_ sender: Tag) {
+extension HTagView: HTagDelegate {
+    func tagClicked(_ sender: HTag) {
         guard let index = tags.index(of: sender) else{
             return
         }
@@ -369,7 +375,7 @@ extension HTagView: TagDelegate {
         }
         delegate?.tagView?(self, tagSelectionDidChange: selectedIndices)
     }
-    func tagCancelled(_ sender: Tag) {
+    func tagCancelled(_ sender: HTag) {
         guard let index = tags.index(of: sender) else{
             return
         }
