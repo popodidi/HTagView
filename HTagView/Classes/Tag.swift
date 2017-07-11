@@ -25,49 +25,49 @@ public class Tag: UIView {
     /**
      Type of tag
      */
-    var tagType: HTagType = .cancel { didSet { updateViews() } }
+    var tagType: HTagType = .cancel { didSet { updateAll() } }
     /**
      Title of tag
      */
-    var tagTitle: String = "tag" { didSet { updateViews() } }
+    var tagTitle: String = "tag" { didSet { updateAll() } }
     /**
      Main background color of tags
      */
-    var tagMainBackColor : UIColor = UIColor.white { didSet { updateViews() } }
+    var tagMainBackColor : UIColor = UIColor.white { didSet { updateTitlesColorsAndFontsDueToSelection() } }
     /**
      Main text color of tags
      */
-    var tagMainTextColor : UIColor = UIColor.black { didSet { updateViews() } }
+    var tagMainTextColor : UIColor = UIColor.black { didSet { updateTitlesColorsAndFontsDueToSelection() } }
     /**
      Secondary background color of tags
      */
-    var tagSecondBackColor : UIColor = UIColor.gray { didSet { updateViews() } }
+    var tagSecondBackColor : UIColor = UIColor.gray { didSet { updateTitlesColorsAndFontsDueToSelection() } }
     /**
      Secondary text color of tags
      */
-    var tagSecondTextColor : UIColor = UIColor.white { didSet { updateViews() } }
+    var tagSecondTextColor : UIColor = UIColor.white { didSet { updateTitlesColorsAndFontsDueToSelection() } }
     /**
      The border width to height ratio of HTags.
      */
-    var tagBorderWidth :CGFloat = 1 { didSet { updateViews() } }
+    var tagBorderWidth :CGFloat = 1 { didSet { updateBorder() } }
     /**
      The border color to height ratio of HTags.
      */
-    var tagBorderColor :CGColor? = UIColor.darkGray.cgColor { didSet { updateViews() } }
+    var tagBorderColor :CGColor? = UIColor.darkGray.cgColor { didSet { updateBorder() } }
     
     /**
      The corner radius to height ratio of HTags.
      */
-    var tagCornerRadiusToHeightRatio :CGFloat = 0.2 { didSet { updateViews() } }
+    var tagCornerRadiusToHeightRatio :CGFloat = 0.2 { didSet { updateBorder() } }
     /**
      The content EdgeInsets of HTags, which would automatically adjust the position in `.cancel` type.
      On the other word, usages are the same in both types.
      */
-    var tagContentEdgeInsets: UIEdgeInsets = UIEdgeInsets() { didSet { updateViews() } }
+    var tagContentEdgeInsets: UIEdgeInsets = UIEdgeInsets() { didSet { updateAll()} }
     /**
      The Font of HTags.
      */
-    var tagFont: UIFont = UIFont.systemFont(ofSize: 17) { didSet { updateViews() } }
+    var tagFont: UIFont = UIFont.systemFont(ofSize: 17) { didSet { updateAll() } }
     
     // MARK: - status
     private(set) var isSelected: Bool = false
@@ -89,7 +89,6 @@ public class Tag: UIView {
     }
     
     deinit {
-        button.removeObserver(self, forKeyPath: "selected")
         button.removeObserver(self, forKeyPath: "highlighted")
     }
     
@@ -97,14 +96,13 @@ public class Tag: UIView {
     func configure(){
         setupButton()
         setupCancelButton()
-        updateViews()
+        updateAll()
     }
     
     // MARK: - button
     func setupButton() {
         addSubview(button)
         button.addTarget(self, action: #selector(tapped), for: .touchUpInside)
-        button.addObserver(self, forKeyPath: "selected", options: .new, context: nil)
         button.addObserver(self, forKeyPath: "highlighted", options: .new, context: nil)
     }
     
@@ -114,12 +112,7 @@ public class Tag: UIView {
     }
     func setSelected(_ selected: Bool) {
         isSelected = selected
-        backgroundColor = selected ? tagMainBackColor.darker() : tagMainBackColor
-        let textColor = isSelected ? tagMainTextColor : tagSecondTextColor
-        var attributes: [String: Any] = [:]
-        attributes[NSFontAttributeName] = tagFont
-        attributes[NSForegroundColorAttributeName] = textColor
-        button.setAttributedTitle(NSAttributedString(string: tagTitle, attributes: attributes), for: .normal)
+        updateTitlesColorsAndFontsDueToSelection()
     }
     public override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         
@@ -157,22 +150,29 @@ public class Tag: UIView {
         frame.size = CGSize(width: button.frame.maxX + 20, height: button.frame.maxY + 20)
     }
     
-    func updateViews() {
+    func updateAll() {
         cancelButton.isHidden = tagType == .select
-        backgroundColor = tagMainBackColor
-        var attributes: [String: Any] = [:]
-        attributes[NSFontAttributeName] = tagFont
-        attributes[NSForegroundColorAttributeName] = tagMainTextColor
-        button.setAttributedTitle(NSAttributedString(string: tagTitle, attributes: attributes), for: .normal)
-        layer.borderWidth = tagBorderWidth
-        layer.borderColor = tagBorderColor
-        layoutIfNeeded()
-        layer.cornerRadius = bounds.height * tagCornerRadiusToHeightRatio
+        updateTitlesColorsAndFontsDueToSelection()
+        updateBorder()
         button.sizeToFit()
         layoutIfNeeded()
         invalidateIntrinsicContentSize()
     }
     
+    func updateTitlesColorsAndFontsDueToSelection() {
+        backgroundColor = isSelected ? tagMainBackColor : tagSecondBackColor
+        let textColor = isSelected ? tagMainTextColor : tagSecondTextColor
+        var attributes: [String: Any] = [:]
+        attributes[NSFontAttributeName] = tagFont
+        attributes[NSForegroundColorAttributeName] = textColor
+        button.setAttributedTitle(NSAttributedString(string: tagTitle, attributes: attributes), for: .normal)
+    }
+    
+    func updateBorder() {
+        layer.borderWidth = tagBorderWidth
+        layer.borderColor = tagBorderColor
+        layer.cornerRadius = bounds.height * tagCornerRadiusToHeightRatio
+    }
     
     // MARK: - User interaction
     func tapped(){

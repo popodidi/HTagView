@@ -90,7 +90,7 @@ open class HTagView: UIView{//, HTagDelegate {
     @IBInspectable
     open var tagMainBackColor : UIColor = UIColor(colorLiteralRed: 100/255, green: 200/255, blue: 205/255, alpha: 1) {
         didSet {
-            newTags.forEach {
+            tags.forEach {
                 $0.tagMainBackColor = tagMainBackColor
             }
         }
@@ -101,7 +101,7 @@ open class HTagView: UIView{//, HTagDelegate {
     @IBInspectable
     open var tagMainTextColor : UIColor = UIColor.white {
         didSet {
-            newTags.forEach {
+            tags.forEach {
                 $0.tagMainTextColor = tagMainTextColor
             }
         }
@@ -112,7 +112,7 @@ open class HTagView: UIView{//, HTagDelegate {
     @IBInspectable
     open var tagSecondBackColor : UIColor = UIColor.lightGray {
         didSet {
-            newTags.forEach {
+            tags.forEach {
                 $0.tagSecondBackColor = tagSecondBackColor
             }
         }
@@ -123,7 +123,7 @@ open class HTagView: UIView{//, HTagDelegate {
     @IBInspectable
     open var tagSecondTextColor : UIColor = UIColor.darkText {
         didSet {
-            newTags.forEach {
+            tags.forEach {
                 $0.tagSecondTextColor = tagSecondTextColor
             }
         }
@@ -134,7 +134,7 @@ open class HTagView: UIView{//, HTagDelegate {
     @IBInspectable
     open var tagBorderWidth :CGFloat = CGFloat(0){
         didSet{
-            newTags.forEach {
+            tags.forEach {
                 $0.tagBorderWidth = tagBorderWidth
             }
             for tag in tags{
@@ -149,7 +149,7 @@ open class HTagView: UIView{//, HTagDelegate {
     @IBInspectable
     open var tagBorderColor :CGColor? = nil{
         didSet{
-            newTags.forEach {
+            tags.forEach {
                 $0.tagBorderColor = tagBorderColor
             }
             for tag in tags{
@@ -165,7 +165,7 @@ open class HTagView: UIView{//, HTagDelegate {
     @IBInspectable
     open var tagCornerRadiusToHeightRatio :CGFloat = CGFloat(0.2){
         didSet{
-            newTags.forEach {
+            tags.forEach {
                 $0.tagCornerRadiusToHeightRatio = tagCornerRadiusToHeightRatio
             }
             for tag in tags{
@@ -182,7 +182,7 @@ open class HTagView: UIView{//, HTagDelegate {
     open var tagContentEdgeInsets: UIEdgeInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8){
         didSet{
             for tag in tags{
-                tag.contentInsets = tagContentEdgeInsets
+                tag.tagContentEdgeInsets = tagContentEdgeInsets
             }
         }
     }
@@ -192,7 +192,7 @@ open class HTagView: UIView{//, HTagDelegate {
     @IBInspectable
     open var tagFont : UIFont = UIFont.systemFont(ofSize: 17) {
         didSet{
-            for tag in newTags {
+            for tag in tags {
                 tag.tagFont = tagFont
             }
             layoutIfNeeded()
@@ -225,7 +225,7 @@ open class HTagView: UIView{//, HTagDelegate {
 //                }
 //            }
             
-            for (index, tag) in newTags.enumerated(){
+            for (index, tag) in tags.enumerated(){
                 if tag.tagType == .select && tag.isSelected{
                     selectedIndexes.append(index)
                 }
@@ -234,8 +234,7 @@ open class HTagView: UIView{//, HTagDelegate {
         }
     }
     
-    var tags : [HTag] = []
-    var newTags: [Tag] = []
+    var tags: [Tag] = []
     
     // MARK: - init
     override public init(frame: CGRect){
@@ -262,10 +261,10 @@ open class HTagView: UIView{//, HTagDelegate {
         let selection = selectedIndices
         
         
-        for tag in newTags {
+        for tag in tags {
             tag.removeFromSuperview()
         }
-        newTags = []
+        tags = []
         for index in  0 ..< dataSource.numberOfTags(self) {
             let tag = Tag()
             tag.delegate = self
@@ -284,7 +283,7 @@ open class HTagView: UIView{//, HTagDelegate {
             tag.tagCornerRadiusToHeightRatio = tagCornerRadiusToHeightRatio
             tag.tagTitle = dataSource.tagView(self, titleOfTagAtIndex: index)
             addSubview(tag)
-            newTags.append(tag)
+            tags.append(tag)
         }
         
         layoutSubviews()
@@ -302,37 +301,29 @@ open class HTagView: UIView{//, HTagDelegate {
         }else{
             var x = marg
             var y = marg
-            for index in 0..<newTags.count{
+            for index in 0..<tags.count{
                 if dataSource.tagView(self, tagWidthAtIndex: index) != HTagAutoWidth {
-                    newTags[index].frame.size.width = dataSource.tagView(self, tagWidthAtIndex: index)
+                    tags[index].frame.size.width = dataSource.tagView(self, tagWidthAtIndex: index)
                 }
-                if newTags[index].frame.width + x > frame.width - marg{
-                    y += newTags[index].frame.height + btwLines
+                if tags[index].frame.width + x > frame.width - marg{
+                    y += tags[index].frame.height + btwLines
                     x = marg
                 }
                 
-                newTags[index].frame.origin = CGPoint(x: x, y: y)
-                x += newTags[index].frame.width + btwTags
+                tags[index].frame.origin = CGPoint(x: x, y: y)
+                x += tags[index].frame.width + btwTags
             }
-            self.frame.size = CGSize(width: self.frame.width, height: y + (newTags.last?.frame.height ?? 0) + marg )
+            self.frame.size = CGSize(width: self.frame.width, height: y + (tags.last?.frame.height ?? 0) + marg )
         }
     }
     
     override open var intrinsicContentSize : CGSize {
-        if newTags.count == 0{
-            return CGSize(width: UIViewNoIntrinsicMetric, height: 0)
-        }else{
-            let height = (newTags.last?.frame.origin.y ?? 0) + (newTags.last?.frame.height ?? 0) + marg
-            return CGSize(width: UIViewNoIntrinsicMetric, height: height )
-        }
-        
-        /*
         if tags.count == 0{
             return CGSize(width: UIViewNoIntrinsicMetric, height: 0)
         }else{
             let height = (tags.last?.frame.origin.y ?? 0) + (tags.last?.frame.height ?? 0) + marg
             return CGSize(width: UIViewNoIntrinsicMetric, height: height )
-        }*/
+        }
     }
     
     // MARK: - Manipulate Tags
@@ -340,30 +331,17 @@ open class HTagView: UIView{//, HTagDelegate {
      Select on tag with titles in `.select` type HTagView. The delegate method `tagView(_:tagSelectionDidChange:)` will be called.
      */
     open func selectTagAtIndex(_ index: Int){
-        for (i, tag) in newTags.enumerated() {
-            guard let type = dataSource?.tagView(self, tagTypeAtIndex: i) , type == .select else {
+        for (i, tag) in tags.enumerated() {
+            guard let type = dataSource?.tagView(self, tagTypeAtIndex: i), type == .select else {
                 continue
             }
             
-            if i != index && !multiselect{
-                tag.setSelected(false)
-            }else if i == index{
+            if i == index {
                 tag.setSelected(true)
+            } else if !multiselect {
+                tag.setSelected(false)
             }
         }
-        
-        /*
-        for (i, tag) in tags.enumerated() {
-            guard let type = dataSource?.tagView(self, tagTypeAtIndex: i) , type == .select else {
-                continue
-            }
-            
-            if i != index && !multiselect{
-                tag.isSelected = false
-            }else if i == index{
-                tag.isSelected = true
-            }
-        }*/
     }
     /**
      Deselect on tag with titles in `.select` type HTagView. The delegate method `tagView(_:tagSelectionDidChange:)` will be called.
@@ -372,41 +350,14 @@ open class HTagView: UIView{//, HTagDelegate {
         guard let type = dataSource?.tagView(self, tagTypeAtIndex: index) , type == .select else {
             return
         }
-        
-        newTags[index].setSelected(false)
-//        tags[index].isSelected = false
+        tags[index].setSelected(false)
     }
-    
-    /*
-    // MARK: - Tag Delegate
-    func tagCancelled(_ sender: HTag) {
-        guard let index = tags.index(of: sender) else{
-            return
-        }
-        
-        delegate?.tagView?(self, didCancelTagAtIndex: index)
-    }
-    func tagClicked(_ sender: HTag){
-        guard let index = tags.index(of: sender) else{
-            return
-        }
-        if dataSource?.tagView(self, tagTypeAtIndex: index) == .select{
-            if sender.isSelected {
-                deselectTagAtIndex(index)
-            }else{
-                selectTagAtIndex(index)
-            }
-        }
-        
-        delegate?.tagView?(self, tagSelectionDidChange: selectedIndices)
-    }*/
-    
     
 }
 
 extension HTagView: TagDelegate {
     func tagClicked(_ sender: Tag) {
-        guard let index = newTags.index(of: sender) else{
+        guard let index = tags.index(of: sender) else{
             return
         }
         if dataSource?.tagView(self, tagTypeAtIndex: index) == .select{
@@ -416,16 +367,12 @@ extension HTagView: TagDelegate {
                 selectTagAtIndex(index)
             }
         }
-        
         delegate?.tagView?(self, tagSelectionDidChange: selectedIndices)
-        
     }
     func tagCancelled(_ sender: Tag) {
-        guard let index = newTags.index(of: sender) else{
+        guard let index = tags.index(of: sender) else{
             return
         }
-        
         delegate?.tagView?(self, didCancelTagAtIndex: index)
-        
     }
 }

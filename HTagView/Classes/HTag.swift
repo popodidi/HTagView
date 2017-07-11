@@ -5,7 +5,7 @@
 //  Created by Chang, Hao on 5/16/16.
 //
 //
-
+/*
 import UIKit
 
 protocol HTagDelegate: class {
@@ -154,4 +154,4 @@ class HTag: UIButton {
         return false
     }
     
-}
+}*/
