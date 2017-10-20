@@ -92,7 +92,8 @@ open class HTagView: UIView {
      Main background color of tags
      */
     @IBInspectable
-    open var tagMainBackColor : UIColor = UIColor(colorLiteralRed: 100/255, green: 200/255, blue: 205/255, alpha: 1) {
+    open var tagMainBackColor : UIColor = UIColor(red: 100/255, green: 200/255, blue: 205/255, alpha: 1)
+         {
         didSet {
             tags.forEach {
                 $0.tagMainBackColor = tagMainBackColor
