@@ -226,6 +226,19 @@ open class HTagView: UIView {
         }
     }
     /**
+     The elevation for each tag.
+     */
+    @IBInspectable
+    open var tagElevation: CGFloat = 0 {
+        didSet {
+            for tag in tags {
+                tag.tagElevation = tagElevation
+            }
+            layoutIfNeeded()
+            invalidateIntrinsicContentSize()
+        }
+    }
+    /**
      Indices of selected tags.
      */
     open var selectedIndices: [Int]{
@@ -288,6 +301,7 @@ open class HTagView: UIView {
             tag.tagCornerRadiusToHeightRatio = tagCornerRadiusToHeightRatio
             tag.tagCancelIconRightMargin = tagCancelIconRightMargin
             tag.tagMaximumWidth = tagMaximumWidth
+            tag.tagElevation = tagElevation
             tag.tagTitle = dataSource.tagView(self, titleOfTagAtIndex: index)
             addSubview(tag)
             tags.append(tag)

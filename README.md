@@ -1,6 +1,5 @@
 # HTagView
 
-<!--[![CI Status](http://img.shields.io/travis/Chang, Hao/HTagView.svg?style=flat)](https://travis-ci.org/Chang, Hao/HTagView)-->
 [![Version](https://img.shields.io/cocoapods/v/HTagView.svg?style=flat)](http://cocoapods.org/pods/HTagView)
 [![License](https://img.shields.io/cocoapods/l/HTagView.svg?style=flat)](http://cocoapods.org/pods/HTagView)
 [![Platform](https://img.shields.io/cocoapods/p/HTagView.svg?style=flat)](http://cocoapods.org/pods/HTagView)
@@ -18,15 +17,12 @@ HTagView is a customized tag view sublassing UIView where tag could be either wi
 - Specific/Auto Maximum tag width
 
 ### Demo
+
 ![](demo.gif)
-
-
-
 
 ## Example
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
-
 
 ## Installation
 
@@ -39,13 +35,17 @@ pod "HTagView"
 
 ### Requirements
 
-Swift Version | HTagView Version
------ | -----
-Swift 2.3 | 2.0.x
-Swift 3.0 | 2.1.0 or later
+| Swift Version | HTagView Version |
+| ------------- | ---------------- |
+| Swift 2.3     | 2.0.x            |
+| Swift 3.0     | 2.1.x            |
+| Swift 3.0     | 3.x              |
+| Swift 5.0     | 4.x              |
 
 ## Usage
+
 ### Configure HTagView
+
 These properties support `@IBDesignable` as well.
 
 ```swift
@@ -69,9 +69,12 @@ override func viewDidLoad(){
 	tagView.tagMaximumWidth = .HTagAutoMaximumWidth
 	tagView.tagBorderColor = UIColor.black.cgColor
 	tagView.tagBorderWidth = 2
+	tagView.tagElevation = 40
 }
 ```
+
 ### Data Source
+
 ```swift
 class ViewController: UIViewController, HTagViewDataSource{
 	// .
@@ -81,28 +84,30 @@ class ViewController: UIViewController, HTagViewDataSource{
     // MARK: - Data
     let data = ["Hey!","This","is","a","HTagView."]
 
-    
+
     // MARK: - HTagViewDataSource
     func numberOfTags(_ tagView: HTagView) -> Int {
     	return data.count
     }
-    
+
     func tagView(_ tagView: HTagView, titleOfTagAtIndex index: Int) -> String {
         return data[index]
     }
-    
+
     func tagView(_ tagView: HTagView, tagTypeAtIndex index: Int) -> HTagType {
 		return .select
 		// return .cancel
     }
-    
+
     func tagView(_ tagView: HTagView, tagWidthAtIndex index: Int) -> CGFloat {
         return .HTagAutoWidth
         // return 150
     }
 }
 ```
+
 ### Delegate
+
 ```swift
 class ViewController: UIViewController, HTagViewDelegate, HTagViewDataSource {
 	// .
@@ -120,7 +125,9 @@ class ViewController: UIViewController, HTagViewDelegate, HTagViewDataSource {
     }
 }
 ```
+
 ### Manually select/deselect tags
+
 ```swift
 tagView.selectTagAtIndex(6)
 tagView.deselectTagAtIndex(3)
@@ -129,7 +136,6 @@ tagView.deselectTagAtIndex(3)
 ## Author
 
 Hao
-
 
 ## License
 

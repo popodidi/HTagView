@@ -22,6 +22,7 @@ class ViewController: UIViewController, HTagViewDelegate, HTagViewDataSource {
         tagView1.marg = 20
         tagView1.btwTags = 20
         tagView1.btwLines = 20
+        tagView1.tagElevation = 40
         tagView1.tagFont = UIFont.systemFont(ofSize: 15)
         tagView1.tagMainBackColor = UIColor(red: 121/255, green: 196/255, blue: 1, alpha: 1)
         tagView1.tagMainTextColor = UIColor.white
@@ -104,7 +105,5 @@ class ViewController: UIViewController, HTagViewDelegate, HTagViewDataSource {
         tagView2_data.remove(at: index)
         tagView.reloadData()
     }
-    
-
 }
 

@@ -76,6 +76,10 @@ public class HTag: UIView {
      Maximum Width of Tag
      */
     var tagMaximumWidth: CGFloat? = nil { didSet { layoutSubviews() } }
+    /**
+     Elevation of Tag
+     */
+    var tagElevation: CGFloat = 0 { didSet { layoutSubviews() } }
     // MARK: - status
     private(set) var isSelected: Bool = false
     
@@ -118,6 +122,7 @@ public class HTag: UIView {
     func setHighlight(_ highlighted: Bool) {
         let color = isSelected ? tagMainBackColor : tagSecondBackColor
         backgroundColor = highlighted ? color.darker() : color
+        layer.shadowRadius = highlighted ? 0 : tagElevation * 0.1
     }
     func setSelected(_ selected: Bool) {
         isSelected = selected
@@ -159,6 +164,15 @@ public class HTag: UIView {
                                                 y: tagContentEdgeInsets.top + button.frame.height/2 - cancelButtonSide/2)
             button.frame.origin = CGPoint(x: tagContentEdgeInsets.left + cancelButtonSide + tagCancelIconRightMargin ,
                                           y: tagContentEdgeInsets.top)
+        }
+        
+        // set shadow
+        if tagElevation != 0 {
+            clipsToBounds = false
+            layer.shadowColor = UIColor.black.cgColor
+            layer.shadowOpacity = 0.5
+            layer.shadowOffset = .zero
+            layer.shadowRadius = tagElevation * 0.1
         }
         
         // set size

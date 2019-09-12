@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "HTagView"
-  s.version          = "4.0"
+  s.version          = "4.1"
   s.summary          = "A customized tag view sublassing UIView"
   s.swift_version    = '5.0'
 
