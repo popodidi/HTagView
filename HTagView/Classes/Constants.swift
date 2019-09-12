@@ -8,6 +8,6 @@
 import Foundation
 
 public extension CGFloat {
-    public static let HTagAutoWidth: CGFloat = 0
-    public static let HTagAutoMaximumWidth: CGFloat = 0
+    static let HTagAutoWidth: CGFloat = 0
+    static let HTagAutoMaximumWidth: CGFloat = 0
 }

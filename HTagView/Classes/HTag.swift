@@ -141,7 +141,7 @@ public class HTag: UIView {
     
     // MARK: - cancel button
     func setupCancelButton() {
-        cancelButton.setImage(UIImage(named: "close_small", in: Bundle(for: self.classForCoder), compatibleWith: nil)?.withRenderingMode(.alwaysTemplate), for: UIControlState())
+        cancelButton.setImage(UIImage(named: "close_small", in: Bundle(for: self.classForCoder), compatibleWith: nil)?.withRenderingMode(.alwaysTemplate), for: UIControl.State())
         cancelButton.addTarget(self, action: #selector(cancelled), for: .touchUpInside)
         addSubview(cancelButton)
         cancelButton.isHidden = tagType == .select
@@ -199,7 +199,7 @@ public class HTag: UIView {
     func updateTitlesColorsAndFontsDueToSelection() {
         backgroundColor = isSelected ? tagMainBackColor : tagSecondBackColor
         let textColor = isSelected ? tagMainTextColor : tagSecondTextColor
-        var attributes: [NSAttributedStringKey: Any] = [:]
+        var attributes: [NSAttributedString.Key: Any] = [:]
         attributes[.font] = tagFont
         attributes[.foregroundColor] = textColor
         button.setAttributedTitle(NSAttributedString(string: tagTitle, attributes: attributes), for: .normal)

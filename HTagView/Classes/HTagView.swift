@@ -331,10 +331,10 @@ open class HTagView: UIView {
     
     override open var intrinsicContentSize : CGSize {
         if tags.count == 0{
-            return CGSize(width: UIViewNoIntrinsicMetric, height: 0)
+            return CGSize(width: UIView.noIntrinsicMetric, height: 0)
         }else{
             let height = (tags.last?.frame.origin.y ?? 0) + (tags.last?.frame.height ?? 0) + marg
-            return CGSize(width: UIViewNoIntrinsicMetric, height: height )
+            return CGSize(width: UIView.noIntrinsicMetric, height: height )
         }
     }
     
@@ -369,7 +369,7 @@ open class HTagView: UIView {
 
 extension HTagView: HTagDelegate {
     func tagClicked(_ sender: HTag) {
-        guard let index = tags.index(of: sender) else{
+        guard let index = tags.firstIndex(of: sender) else{
             return
         }
         if dataSource?.tagView(self, tagTypeAtIndex: index) == .select{
@@ -382,7 +382,7 @@ extension HTagView: HTagDelegate {
         delegate?.tagView?(self, tagSelectionDidChange: selectedIndices)
     }
     func tagCancelled(_ sender: HTag) {
-        guard let index = tags.index(of: sender) else{
+        guard let index = tags.firstIndex(of: sender) else{
             return
         }
         delegate?.tagView?(self, didCancelTagAtIndex: index)

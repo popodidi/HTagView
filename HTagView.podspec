@@ -8,8 +8,9 @@
 
 Pod::Spec.new do |s|
   s.name             = "HTagView"
-  s.version          = "3.0.1"
+  s.version          = "4.0"
   s.summary          = "A customized tag view sublassing UIView"
+  s.swift_version    = '5.0'
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -25,9 +26,7 @@ Pod::Spec.new do |s|
   s.source           = { :git => "https://github.com/popodidi/HTagView.git", :tag => s.version.to_s }
 
   s.ios.deployment_target = '9.0'
-
   s.source_files = 'HTagView/Classes/**/*'
   s.resources = ['HTagView/Assets/*.{xcassets,png,jpeg,jpg,storyboard,xib}']
-
   s.frameworks = 'UIKit'
 end

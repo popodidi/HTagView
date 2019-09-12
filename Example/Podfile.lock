@@ -1,5 +1,5 @@
 PODS:
-  - HTagView (2.1.1)
+  - HTagView (4.0)
 
 DEPENDENCIES:
   - HTagView (from `../`)
@@ -9,8 +9,8 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  HTagView: bf05bb9cebaef0a887bc7b6a02ba6e6e724e903f
+  HTagView: 520a6af0e2fb967a1740b4b61af99afee889ed66
 
 PODFILE CHECKSUM: 9d80ee50c82816a3eec84d44cd48aa8dd9d792bc
 
-COCOAPODS: 1.2.1
+COCOAPODS: 1.7.5

@@ -1,7 +1,8 @@
 {
   "name": "HTagView",
-  "version": "2.1.1",
+  "version": "4.0",
   "summary": "A customized tag view sublassing UIView",
+  "swift_versions": "5.0",
   "description": "A customized tag view sublassing UIView where tag could be either with cancel button or seletable.",
   "homepage": "https://github.com/popodidi/HTagView",
   "license": "MIT",
@@ -10,7 +11,7 @@
   },
   "source": {
     "git": "https://github.com/popodidi/HTagView.git",
-    "tag": "2.1.1"
+    "tag": "4.0"
   },
   "platforms": {
     "ios": "9.0"
@@ -19,5 +20,6 @@
   "resources": [
     "HTagView/Assets/*.{xcassets,png,jpeg,jpg,storyboard,xib}"
   ],
-  "frameworks": "UIKit"
+  "frameworks": "UIKit",
+  "swift_version": "5.0"
 }
